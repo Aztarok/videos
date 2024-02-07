@@ -3,16 +3,20 @@
 import { Button } from '@/components/ui/button';
 import { supabaseBrowser } from '@/lib/supabase/browser';
 import { KeyRound } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import { FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 
-const page = () => {
+const Page = () => {
+	const params = useSearchParams();
+	const next = params.get('next');
+
 	const handleLoginWithOAuth = (provider: 'github' | 'google') => {
 		const supabase = supabaseBrowser();
 		supabase.auth.signInWithOAuth({
 			provider,
 			options: {
-				redirectTo: location.origin + '/auth/callback',
+				redirectTo: location.origin + '/auth/callback?next=' + next,
 			},
 		});
 	};
@@ -50,4 +54,4 @@ const page = () => {
 	);
 };
 
-export default page;
+export default Page;

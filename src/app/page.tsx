@@ -5,12 +5,8 @@ import Link from 'next/link';
 export default function Home() {
 	return (
 		<div className="flex gap-5">
-			<Button>Hello World</Button>
-			<Button asChild>
-				<Link className="w-64 bg-red-50" href="/auth">
-					Sign In
-				</Link>
-			</Button>
+			<Link href="/dashboard">/Dashboard</Link>
+			<Link href="/profile">/Profile</Link>
 		</div>
 	);
 }
