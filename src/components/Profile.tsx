@@ -9,10 +9,20 @@ import { useQueryClient } from '@tanstack/react-query';
 import { usePathname, useRouter } from 'next/navigation';
 import { protectedPaths } from '@/lib/constant';
 
-const Profile = () => {
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuLabel,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+
+export default function Profile() {
 	const { isFetching, data } = useUser();
 	const queryClient = useQueryClient();
 	const router = useRouter();
+
 	const pathname = usePathname();
 
 	if (isFetching) {
@@ -32,32 +42,49 @@ const Profile = () => {
 	return (
 		<div>
 			{!data?.id ? (
-				<Link href="/auth" className="animate-fade">
-					<Button variant="outline">Sign In</Button>
+				<Link href="/auth" className=" animate-fade">
+					<Button variant="outline">SignIn</Button>
 				</Link>
 			) : (
-				<>
-					{data?.image_url ? (
-						<Image
-							src={data.image_url || ''}
-							alt={data.display_name + "'s Profile"}
-							width={50}
-							height={50}
-							className="rounded-full ring-2 animate-fade cursor-pointer"
-							onClick={handleLogout}
-						/>
-					) : (
-						<div
-							className="h-[50px] w-[50px] flex rounded-full text-2xl font-bold items-center justify-center ring-2 animate-fade cursor-pointer"
-							onClick={handleLogout}
+				<DropdownMenu>
+					<DropdownMenuTrigger>
+						<>
+							{data?.image_url ? (
+								<Image
+									src={data.image_url || ''}
+									alt={data.display_name || ''}
+									width={50}
+									height={50}
+									className=" rounded-full focus:border-none animate-fade ring-2 cursor-pointer"
+								/>
+							) : (
+								<div className="h-[50px] w-[50px] flex items-center justify-center ring-2 rounded-full text-2xl font-bold cursor-pointer">
+									<h1>{data.email[0]}</h1>
+								</div>
+							)}
+						</>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent>
+						<DropdownMenuLabel>My Account</DropdownMenuLabel>
+						<DropdownMenuSeparator className="bg-white" />
+						<DropdownMenuItem>
+							<Link href="/profile">Profile</Link>
+						</DropdownMenuItem>
+						<DropdownMenuItem
+							onClick={() => {
+								document
+									.getElementById('upload-trigger')
+									?.click();
+							}}
 						>
-							<h1>{data.email[0]}</h1>
-						</div>
-					)}
-				</>
+							Upload
+						</DropdownMenuItem>
+						<DropdownMenuItem onClick={handleLogout}>
+							Logout
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
 			)}
 		</div>
 	);
-};
-
-export default Profile;
+}
