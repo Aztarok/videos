@@ -26,7 +26,8 @@ const Uploader = () => {
     const { data: user } = useUser();
     const supabase = supabaseBrowser();
     const router = useRouter();
-
+    const [width, setWidth] = useState(0);
+    const [height, setHeight] = useState(0);
     const onBeforeRequest = async (req: any) => {
         const { data } = await supabase.auth.getSession();
         console.log(data);
@@ -55,7 +56,6 @@ const Uploader = () => {
     );
 
     uppy.on("file-added", (file) => {
-        console.log("file added");
         file.meta = {
             ...file.meta,
             bucketName: "images",
@@ -64,15 +64,42 @@ const Uploader = () => {
     });
 
     uppy.on("upload-success", () => {
-        setTimeout(() => {
-            uppy.cancelAll();
-            if (inputRef.current) {
-                inputRef.current.value = "";
-            }
-            document.getElementById("trigger-close")?.click();
-            router.refresh();
-        }, 1000);
+        uppy.cancelAll();
+        if (inputRef.current) {
+            inputRef.current.value = "";
+        }
+        document.getElementById("trigger-close")?.click();
+        router.refresh();
     });
+
+    uppy.on("thumbnail:generated", (file, preview) => {
+        const img = new Image();
+        img.src = preview;
+        img.onload = () => {
+            setWidth(img.width);
+            setHeight(img.height);
+            console.log(width);
+            console.log(height);
+        };
+    });
+
+    // uppy.on("thumbnail:generated", (file, preview) => {
+    //     const img = new Image();
+    //     img.src = preview;
+    //     img.onload = () => {
+    //         const aspect_ratio = img.width / img.height;
+    //         console.log(aspect_ratio);
+    //         setWidth(img.width);
+    //         setHeight(img.height);
+    //         console.log(img.width);
+    //         if (aspect_ratio > 1.8 || aspect_ratio < 0.7) {
+    //             uppy.removeFile(file.id);
+    //             uppy.info(
+    //                 "Aspect ratio for photo is too skewed, please fix and try again."
+    //             );
+    //         }
+    //     };
+    // });
 
     // const handleUpload = () => {
     //     if (uppy.getFiles().length !== 0) {
@@ -112,10 +139,9 @@ const Uploader = () => {
                     user?.id + "/" + randomUUID + "/" + uppy.getFiles()[0].name
             });
 
+            const description = inputRef.current.value; // Retrieve description from input field
             uppy.upload().then(async () => {
-                const description = inputRef.current.value; // Retrieve description from input field
-                console.log("Description:", description); // Debugging
-
+                console.log("Description:", description.trim()); // Debugging
                 try {
                     if (description.trim() !== "") {
                         // Check if description is not empty or just whitespace
@@ -154,8 +180,8 @@ const Uploader = () => {
                     />
                     <Input
                         placeholder="Image description"
-                        onKeyUp={() => console.log(inputRef.current.value)}
                         ref={inputRef}
+                        onKeyUp={() => console.log(width, height)}
                     />
                     <Button className="w-full" onClick={handleUpload}>
                         Upload
