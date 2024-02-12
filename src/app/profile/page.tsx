@@ -1,7 +1,8 @@
+import FetchPosts from '@/components/FetchPosts';
 import React from 'react';
 
 const Page = () => {
-	return <div>Profile</div>;
+	return <FetchPosts variant="profile" />;
 };
 
 export default Page;
