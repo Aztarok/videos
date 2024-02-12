@@ -30,7 +30,6 @@ const Uploader = () => {
 	const [height, setHeight] = useState(0);
 	const onBeforeRequest = async (req: any) => {
 		const { data } = await supabase.auth.getSession();
-		console.log(data);
 		req.setHeader('Authorization', `Bearer ${data.session?.access_token}`);
 	};
 
@@ -83,54 +82,6 @@ const Uploader = () => {
 		};
 	});
 
-	// uppy.on("thumbnail:generated", (file, preview) => {
-	//     const img = new Image();
-	//     img.src = preview;
-	//     img.onload = () => {
-	//         const aspect_ratio = img.width / img.height;
-	//         console.log(aspect_ratio);
-	//         setWidth(img.width);
-	//         setHeight(img.height);
-	//         console.log(img.width);
-	//         if (aspect_ratio > 1.8 || aspect_ratio < 0.7) {
-	//             uppy.removeFile(file.id);
-	//             uppy.info(
-	//                 "Aspect ratio for photo is too skewed, please fix and try again."
-	//             );
-	//         }
-	//     };
-	// });
-
-	// const handleUpload = () => {
-	//     if (uppy.getFiles().length !== 0) {
-	//         const randomUUID = crypto.randomUUID();
-	//         uppy.setFileMeta(uppy.getFiles()[0].id, {
-	//             objectName:
-	//                 user?.id + "/" + randomUUID + "/" + uppy.getFiles()[0].name
-	//         });
-
-	//         uppy.upload().then(async () => {
-	//             const description = inputRef.current.value;
-	//             console.log("wello1");
-	//             console.log(description);
-	//             if (description) {
-	//                 console.log("wello");
-	//                 console.log(description);
-	//                 const { error } = await supabase
-	//                     .from("posts")
-	//                     .update({ description: description })
-	//                     .eq("id", randomUUID);
-
-	//                 if (error) {
-	//                     toast.error("Failed to update description");
-	//                 }
-	//             }
-	//         });
-	//     } else {
-	//         toast.warning("Please add an image");
-	//     }
-	// };
-
 	const handleUpload = () => {
 		if (uppy.getFiles().length !== 0) {
 			const randomUUID = crypto.randomUUID();
@@ -141,7 +92,6 @@ const Uploader = () => {
 
 			const description = inputRef.current.value; // Retrieve description from input field
 			uppy.upload().then(async () => {
-				console.log('Description:', description.trim()); // Debugging
 				try {
 					if (description.trim() !== '') {
 						// Check if description is not empty or just whitespace
@@ -149,11 +99,8 @@ const Uploader = () => {
 							.from('posts')
 							.update({ description: description })
 							.eq('id', randomUUID);
-
-						console.log('Description updated successfully');
 					}
 				} catch (error) {
-					console.error('Failed to update description:', error);
 					toast.error('Failed to update description');
 				}
 			});
@@ -178,11 +125,7 @@ const Uploader = () => {
 						className="w-auto"
 						hideUploadButton
 					/>
-					<Input
-						placeholder="Image description"
-						ref={inputRef}
-						onKeyUp={() => console.log(width, height)}
-					/>
+					<Input placeholder="Image description" ref={inputRef} />
 					<Button className="w-full" onClick={handleUpload}>
 						Upload
 					</Button>

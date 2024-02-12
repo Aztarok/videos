@@ -23,7 +23,7 @@ export default function Profile({
 	imageNew,
 }: {
 	fade?: boolean;
-	imageNew: string;
+	imageNew?: string;
 }) {
 	const { isFetching, data } = useUser();
 	const queryClient = useQueryClient();

@@ -24,6 +24,7 @@ const FetchPosts = async ({ variant }: { variant?: any }) => {
 					if (post.post_by === user.user?.id) {
 						posts.push({
 							id: post.id,
+							name: post.name,
 							post_by: post.post_by,
 							image: `https://umxjgngsvuacvscuazli.supabase.co/storage/v1/object/public/images/${post.post_by}/${post.id}/${post.name}`,
 							description: post.description,
@@ -33,6 +34,7 @@ const FetchPosts = async ({ variant }: { variant?: any }) => {
 				} else {
 					posts.push({
 						id: post.id,
+						name: post.name,
 						post_by: post.post_by,
 						image: `https://umxjgngsvuacvscuazli.supabase.co/storage/v1/object/public/images/${post.post_by}/${post.id}/${post.name}`,
 						description: post.description,
@@ -49,6 +51,7 @@ const FetchPosts = async ({ variant }: { variant?: any }) => {
 			<div className="flex flex-wrap justify-center gap-5">
 				{posts
 					?.map((post, index) => {
+						let lastThree = post.name.substr(post.name.length - 3);
 						return (
 							<div
 								key={index}
@@ -63,18 +66,27 @@ const FetchPosts = async ({ variant }: { variant?: any }) => {
 								<h1 className="text-white text-xl font-medium">
 									{post.description}
 								</h1>
-								<Image
-									src={post.image}
-									alt={`${post.id}`}
-									width={0}
-									height={0}
-									sizes="100vw"
-									style={{
-										width: '1600px',
-										height: 'auto',
-									}}
-									className="object-fill"
-								/>
+								{lastThree !== 'mp4' ? (
+									<Image
+										src={post.image}
+										alt={`${post.id}`}
+										width={0}
+										height={0}
+										sizes="100vw"
+										style={{
+											width: '1600px',
+											height: 'auto',
+										}}
+										className="object-fill"
+									/>
+								) : (
+									<video controls>
+										<source
+											src={post.image}
+											type="video/mp4"
+										/>
+									</video>
+								)}
 							</div>
 						);
 					})
