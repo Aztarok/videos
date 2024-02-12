@@ -18,7 +18,13 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-export default function Profile() {
+export default function Profile({
+	fade = true,
+	imageNew,
+}: {
+	fade?: boolean;
+	imageNew: string;
+}) {
 	const { isFetching, data } = useUser();
 	const queryClient = useQueryClient();
 	const router = useRouter();
@@ -39,6 +45,8 @@ export default function Profile() {
 		}
 	};
 
+	const imageUrl = imageNew || data?.image_url;
+
 	return (
 		<div>
 			{!data?.id ? (
@@ -51,11 +59,13 @@ export default function Profile() {
 						<>
 							{data?.image_url ? (
 								<Image
-									src={data.image_url || ''}
+									src={imageUrl || ''}
 									alt={data.display_name || ''}
 									width={50}
 									height={50}
-									className=" rounded-full focus:border-none animate-fade ring-2 cursor-pointer"
+									className={`${
+										fade ? 'animate-fade' : ''
+									} rounded-full focus:border-none ring-2 cursor-pointer`}
 								/>
 							) : (
 								<div className="h-[50px] w-[50px] flex items-center justify-center ring-2 rounded-full text-2xl font-bold cursor-pointer">
