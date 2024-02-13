@@ -63,7 +63,7 @@ const FetchPosts = async ({ variant }: { variant?: any }) => {
 										imageNew={post.image_user}
 									/>
 								</div>
-								<h1 className="text-white text-xl font-medium">
+								<h1 className="text-white flex justify-start w-full text-xl font-medium">
 									{post.description}
 								</h1>
 								{lastThree !== 'mp4' ? (

@@ -5,4 +5,6 @@ export interface Post {
 	image: any;
 	description: any;
 	image_user: any;
+	width?: any;
+	height?: any;
 }
