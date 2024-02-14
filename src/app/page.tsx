@@ -1,8 +1,6 @@
 import DeletePost from '@/components/DeletePost';
-import FetchPosts from '@/components/FetchPosts';
 import { supabaseServer } from '@/lib/supabase/server';
 import Image from 'next/image';
-import ReactPlayer from 'react-player';
 
 const Page = async () => {
 	const supabase = supabaseServer();
