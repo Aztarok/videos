@@ -2,13 +2,15 @@ import Profile from '@/components/Profile';
 import { supabaseServer } from '@/lib/supabase/server';
 import { Post } from '@/lib/types/custom';
 import Image from 'next/image';
+import { Suspense } from 'react';
 
 const FetchPosts = async ({ variant }: { variant?: any }) => {
 	const supabase = supabaseServer();
 	const { data } = await supabase
 		.from('posts')
 		.select('*,profiles(display_name)');
-
+	const baseUrl =
+		'https://umxjgngsvuacvscuazli.supabase.co/storage/v1/object/public/images/';
 	const posts: Post[] = [];
 	const { data: user } = await supabase.auth.getUser();
 	async function getPosts() {
@@ -26,7 +28,7 @@ const FetchPosts = async ({ variant }: { variant?: any }) => {
 							id: post.id,
 							name: post.name,
 							post_by: post.post_by,
-							image: `https://umxjgngsvuacvscuazli.supabase.co/storage/v1/object/public/images/${post.post_by}/${post.id}/${post.name}`,
+							image: `${baseUrl}${post.post_by}/${post.id}/${post.name}`,
 							description: post.description,
 							image_user: newOne?.image_url,
 						});
@@ -36,7 +38,7 @@ const FetchPosts = async ({ variant }: { variant?: any }) => {
 						id: post.id,
 						name: post.name,
 						post_by: post.post_by,
-						image: `https://umxjgngsvuacvscuazli.supabase.co/storage/v1/object/public/images/${post.post_by}/${post.id}/${post.name}`,
+						image: `${baseUrl}${post.post_by}/${post.id}/${post.name}`,
 						description: post.description,
 						image_user: newOne?.image_url,
 					});
@@ -58,10 +60,12 @@ const FetchPosts = async ({ variant }: { variant?: any }) => {
 								className="p-5 bg-slate-800 hover:bg-slate-950 hover:cursor-pointer border-white border-2 rounded-lg w-[75%] flex flex-col justify-center items-center space-y-5"
 							>
 								<div className="h-8 flex justify-start w-full flex-col">
-									<Profile
-										fade={false}
-										imageNew={post.image_user}
-									/>
+									<Suspense>
+										<Profile
+											fade={false}
+											imageNew={post.image_user}
+										/>
+									</Suspense>
 								</div>
 								<h1 className="text-white flex justify-start w-full text-xl font-medium">
 									{post.description}
@@ -73,11 +77,7 @@ const FetchPosts = async ({ variant }: { variant?: any }) => {
 										width={0}
 										height={0}
 										sizes="100vw"
-										style={{
-											width: '1600px',
-											height: 'auto',
-										}}
-										className="object-fill"
+										className="object-fill w-96"
 									/>
 								) : (
 									<video controls>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import Profile from './Profile';
 import Link from 'next/link';
 
@@ -8,7 +8,12 @@ const Navbar = () => {
 			<Link href="/">
 				<h1 className="text-xl font-bold">Logo</h1>
 			</Link>
-			<Profile />
+			<Link href="/videos">
+				<h1 className="text-xl font-bold">Videos</h1>
+			</Link>
+			<Suspense>
+				<Profile />
+			</Suspense>
 		</div>
 	);
 };

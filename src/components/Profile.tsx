@@ -77,7 +77,7 @@ export default function Profile({
 					<DropdownMenuContent>
 						<DropdownMenuLabel>My Account</DropdownMenuLabel>
 						<DropdownMenuSeparator className="bg-white" />
-						<DropdownMenuItem>
+						<DropdownMenuItem asChild>
 							<Link href="/profile">Profile</Link>
 						</DropdownMenuItem>
 						<DropdownMenuItem

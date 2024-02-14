@@ -16,23 +16,37 @@ const Page = async () => {
 			...post,
 		};
 	});
+	const re: any = /(?:\.([^.]+))?$/;
 	return (
 		<div>
 			<div className="grid grid-cols-3 gap-10">
 				{posts?.map((post) => {
+					let ext: string | null | undefined = re.exec(post.name)[1];
+
 					return (
 						<div
 							key={post.id}
 							className="rounded-md w-full space-y-5 relative"
 						>
 							<h1>@{post.profiles?.display_name}</h1>
-							<div className="w-full h-96 relative rounded-md border-2">
-								<Image
-									src={imageUrlHost + post.image}
-									alt={post.description || ''}
-									fill
-									className="rounded-md object-cover object-center"
-								/>
+							<div className="w-full h-96 relative rounded-md border-2 flex">
+								{ext === 'mp4' ? (
+									<video
+										controls
+										className="rounded-md object-cover object-center"
+									>
+										<source
+											src={imageUrlHost + post.image}
+										/>
+									</video>
+								) : (
+									<Image
+										src={imageUrlHost + post.image}
+										alt={post.description || ''}
+										fill
+										className="rounded-md object-cover object-center"
+									/>
+								)}
 							</div>
 							<DeletePost
 								post_by={post.post_by}
