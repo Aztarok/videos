@@ -1,15 +1,18 @@
-import FetchPosts from '@/components/FetchPosts';
-import React from 'react';
+import { useSearchParams } from "next/navigation";
 
-const Page = ({ params }: { params: { videoId: string } }) => {
-	const baseUrl =
-		'https://umxjgngsvuacvscuazli.supabase.co/storage/v1/object/public/images/';
-	return (
-		<div>
-			Wow: {params.videoId}
-			<div>hi</div>
-		</div>
-	);
+const Page = ({ searchParams }: { searchParams: any }) => {
+    const id = searchParams.video_id;
+    const name = searchParams.video_name;
+    const poster = searchParams.post_by;
+    const baseUrl =
+        "https://umxjgngsvuacvscuazli.supabase.co/storage/v1/object/public/images/";
+    return (
+        <div>
+            <video controls className="w-full">
+                <source src={`${baseUrl}${poster}/${id}/${name}`} />
+            </video>
+        </div>
+    );
 };
 
 export default Page;
