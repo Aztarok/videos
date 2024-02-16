@@ -12,7 +12,6 @@ const Page = async () => {
         .select("*,profiles(id, display_name)")
         .order("created_at", { ascending: false })
         .filter("type", "like", "video/%");
-    console.log(data);
     const posts: any[] = [];
     async function getVideos() {
         if (data) {

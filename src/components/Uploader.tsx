@@ -142,8 +142,6 @@ const Uploader = () => {
             const fileType: any = uppy.getFiles()[0].meta.type;
             uppy.upload().then(async () => {
                 try {
-                    console.log(fileType);
-
                     // Check if description is not empty or just whitespace
                     await supabase
                         .from("posts")
@@ -178,11 +176,7 @@ const Uploader = () => {
                         className="w-auto"
                         hideUploadButton
                     />
-                    <Input
-                        placeholder="Image description"
-                        ref={inputRef}
-                        onKeyUp={() => console.log(width, height)}
-                    />
+                    <Input placeholder="Image description" ref={inputRef} />
                     <Button className="w-full" onClick={handleUpload}>
                         Upload
                     </Button>
