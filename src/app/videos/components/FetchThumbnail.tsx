@@ -3,6 +3,7 @@
 import { generateVideoThumbnailViaUrl } from "@/index";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 
 const FetchThumbnail = ({
@@ -14,43 +15,46 @@ const FetchThumbnail = ({
     video_id: string;
     video_name: string;
 }) => {
+    const router = useRouter();
     const [thumbnails, setThumbnails] = useState<string[]>([]);
     const wasAlreadyRequested = useRef(false);
     const thumbGenRef = useRef<HTMLDivElement>(null);
     const baseUrl =
         "https://umxjgngsvuacvscuazli.supabase.co/storage/v1/object/public/images/";
     const vid = `${baseUrl}${post_by}/${video_id}/${video_name}`;
-    const genThumbnail = async (num: number, vid: string) => {
-        const thumbGenDiv = thumbGenRef.current;
-        let time = 0.5;
-        let thumbs: string[] = [];
-        for (let i = 0; i < num; i++) {
-            try {
-                wasAlreadyRequested.current = true;
-                const result = await generateVideoThumbnailViaUrl(vid, time);
-                if (result) {
-                    // const img = document.createElement('img');
-                    // img.src = result;
-                    // img.width = 800;
-                    // img.height = 400;
-                    // img.classList.add('hover:cursor-pointer');
-                    // thumbGenDiv!.append(img);
-                    thumbs.push(result);
-                }
-            } catch (error) {}
-            setThumbnails(thumbs);
+
+    const generateAndSaveThumbnail = async (vid: string) => {
+        try {
+            const result = await generateVideoThumbnailViaUrl(vid, 0.5);
+            wasAlreadyRequested.current = true;
+            if (result) {
+                localStorage.setItem(video_id, JSON.stringify([result]));
+                setThumbnails([result]);
+            }
+        } catch (error) {
+            console.error("Error generating thumbnail:", error);
         }
     };
     useEffect(() => {
-        if (!wasAlreadyRequested.current) {
-            genThumbnail(1, vid);
+        const storedThumbnails = localStorage.getItem(video_id);
+        const handleBeforeUnload = () => {
+            localStorage.clear();
+        };
+        window.addEventListener("beforeunload", handleBeforeUnload);
+
+        if (storedThumbnails) {
+            setThumbnails(JSON.parse(storedThumbnails));
+        } else {
+            generateAndSaveThumbnail(vid);
         }
-        return () => {};
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
     }, [wasAlreadyRequested]);
 
     return (
         <div
-            className="w-full h-full justify-center items-center m-5 rounded-lg overflow-hidden max-h-[25%] max-w-[25%]"
+            className="w-full h-full justify-center items-center m-5 rounded-lg mr-auto  overflow-hidden max-h-[25%] max-w-[25%]"
             ref={thumbGenRef}
             style={{
                 position: "relative",
@@ -62,7 +66,7 @@ const FetchThumbnail = ({
                 <Link
                     href={{
                         pathname: `/videos/${video_id}`,
-                        query: { post_by, video_name, video_id }
+                        query: { video_id }
                     }}
                     key={index}
                 >

@@ -22,15 +22,20 @@ import { Input } from "./ui/input";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-export default function Uploader() {
+export default function Uploader({
+    access,
+    userId,
+    uuid
+}: {
+    access: any;
+    userId: any;
+    uuid: any;
+}) {
     const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
-    const { data: user } = useUser();
-    const supabase = supabaseBrowser();
     const router = useRouter();
-
+    const supabase = supabaseBrowser();
     const onBeforeRequest = async (req: any) => {
-        const { data } = await supabase.auth.getSession();
-        req.setHeader("Authorization", `Bearer ${data.session?.access_token}`);
+        req.setHeader("Authorization", `Bearer ${access}`);
     };
     const [uppy] = useState(() =>
         new Uppy({
@@ -62,35 +67,19 @@ export default function Uploader() {
     });
 
     uppy.on("upload-success", () => {
-        uppy.cancelAll();
-        if (inputRef.current) {
-            inputRef.current.value = "";
-        }
-        document.getElementById("trigger-close")?.click();
-        router.refresh();
+        // uppy.cancelAll();
+        // if (inputRef.current) {
+        //     inputRef.current.value = "";
+        // }
+        // router.refresh();
     });
 
     const handleUpload = () => {
         if (uppy.getFiles().length !== 0) {
-            const randomUUID = crypto.randomUUID();
-
             uppy.setFileMeta(uppy.getFiles()[0].id, {
-                objectName:
-                    user?.id + "/" + randomUUID + "/" + uppy.getFiles()[0].name
+                objectName: userId + "/" + uuid + "/" + uppy.getFiles()[0].name
             });
-
-            uppy.upload().then(async () => {
-                const description = inputRef.current.value;
-                if (description.trim()) {
-                    const { error } = await supabase
-                        .from("posts")
-                        .update({ description: description })
-                        .eq("id", randomUUID);
-                    if (error) {
-                        toast.error("Fail to update descriptions.");
-                    }
-                }
-            });
+            uppy.upload();
         } else {
             toast.warning("Please adding an image");
         }
@@ -99,11 +88,11 @@ export default function Uploader() {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <button id="upload-trigger"></button>
+                <button id="thumb-trigger"></button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Daily Upload</DialogTitle>
+                    <DialogTitle>Thumbnail Upload</DialogTitle>
                     <DialogDescription>Select your photo.</DialogDescription>
                 </DialogHeader>
                 <div className=" space-y-5">
@@ -114,7 +103,7 @@ export default function Uploader() {
                     />
                     <Input placeholder=" image description" ref={inputRef} />
                     <Button className="w-full" onClick={handleUpload}>
-                        Upload
+                        Continue
                     </Button>
                 </div>
             </DialogContent>

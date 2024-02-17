@@ -100,9 +100,6 @@ export default function Profile({
                         >
                             Upload
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={handleBan}>
-                            Ban
-                        </DropdownMenuItem>
                         <DropdownMenuItem onClick={handleLogout}>
                             Logout
                         </DropdownMenuItem>
