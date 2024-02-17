@@ -9,7 +9,7 @@ import { Dashboard } from "@uppy/react";
 import Tus from "@uppy/tus";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import {
     generateVideoThumbnails,
@@ -36,11 +36,12 @@ const Uploader = () => {
     const { data: user } = useUser();
     const supabase = supabaseBrowser();
     const router = useRouter();
-    const [thumbnail, setThumbnail] = useState<Blob | null>(null);
+    const [thumbnail, setThumbnail] = useState<any>(null);
     const [vidDuration, setVidDuration] = useState<any>(0);
     const [custom, setCustom] = useState<boolean>(false);
     const [currentFile, setCurrentFile] = useState<any>(null);
     const [session, setSession] = useState<any>(null);
+    const [blobers, setBlobers] = useState<any>(null);
     const onBeforeRequest = async (req: any) => {
         const { data } = await supabase.auth.getSession();
         setSession(data);
@@ -97,18 +98,17 @@ const Uploader = () => {
         };
         if (file.data instanceof File) {
             setCurrentFile(file.data);
-            let time = await getVideoDurationFromVideoFile(file.data);
-            setVidDuration(time - 0.01);
-            generateAndSaveThumbnail(file.data, 0); // Pass the current time to generateAndSaveThumbnail
+            if (file.type === "video/mp4") {
+                let time = await getVideoDurationFromVideoFile(file.data);
+                setVidDuration(time - 0.01);
+                // generateAndSaveThumbnail(file.data, 0); // Pass the current time to generateAndSaveThumbnail
+            }
         }
-        console.log(currentFile);
         return () => {};
     });
     const randomUUID = crypto.randomUUID();
 
-    uppy.on("dashboard:modal-open", () => {
-        console.log("hi");
-    });
+    uppy.on("dashboard:modal-open", () => {});
 
     // Event listener for successful upload
     uppy.on("upload-success", () => {
@@ -120,9 +120,19 @@ const Uploader = () => {
         router.refresh();
     });
 
-    uppy.on("file-removed", (file, reason) => {
-        console.log("Removed file", file);
+    uppy.on("file-removed", (file) => {
+        setThumbnail(null);
+        setVidDuration(0);
+        setCustom(false);
+        setCurrentFile(null);
     });
+
+    const findFiles = () => {
+        for (let i = 0; i < uppy.getFiles().length; i++) {
+            const currentFile = uppy.getFiles()[i];
+            console.log(currentFile);
+        }
+    };
 
     const handleUpload = () => {
         if (uppy.getFiles().length !== 0) {
@@ -152,6 +162,7 @@ const Uploader = () => {
             toast.warning("Please add an image");
         }
     };
+
     const handleSlider = async (e: any) => {
         const currentValue = e[0];
         let currentFrame;
@@ -164,7 +175,6 @@ const Uploader = () => {
         }
         setThumbnail(null);
         try {
-            console.log(currentFile);
             await generateAndSaveThumbnail(
                 currentFile,
                 currentFrame.toFixed(2)
@@ -177,6 +187,26 @@ const Uploader = () => {
 
     let debounce = require("lodash.debounce");
     const debounceHandleSlider = debounce(handleSlider, 500);
+
+    const onThumbnailUploaded = async (thumbnailFile: any, blober: any) => {
+        await setThumbnail(thumbnailFile);
+        await setBlobers(blober);
+        if (thumbnailFile && blober) {
+            await new Promise((resolve: any) => setTimeout(resolve, 1000));
+            await handleTransfer(thumbnailFile, blober);
+        }
+    };
+
+    const handleThumbDelete = () => {
+        setThumbnail(null);
+    };
+    const handleSwitch = () => {
+        setCustom(!custom);
+        setThumbnail(null);
+    };
+    const handleTransfer = (thumbnailFile: any, blober: any) => {
+        uppy.addFile({ ...thumbnailFile, preview: blober });
+    };
 
     return (
         <Dialog>
@@ -194,8 +224,15 @@ const Uploader = () => {
                         className="w-auto"
                         hideUploadButton
                     />
+                    <Button onClick={() => console.log(uppy.getState())}>
+                        Bruh
+                    </Button>
+                    <Button onClick={() => findFiles()}>Bruh 2</Button>
+                    <Button onClick={() => handleTransfer(thumbnail, blobers)}>
+                        Bruh 3
+                    </Button>
                     <Input placeholder="Image description" ref={inputRef} />
-                    {currentFile ? (
+                    {currentFile?.type === "video/mp4" && (
                         <div>
                             <div className="flex justify-between">
                                 {custom ? (
@@ -210,9 +247,7 @@ const Uploader = () => {
                                 <div className="flex gap-2">
                                     <h1>Or</h1>
                                     <Switch
-                                        onCheckedChange={() =>
-                                            setCustom(!custom)
-                                        }
+                                        onCheckedChange={handleSwitch}
                                         className=""
                                     />
                                 </div>
@@ -230,6 +265,8 @@ const Uploader = () => {
                                     <Separator className="my-4 bg-white" />
                                     {thumbnail && (
                                         <>
+                                            Hi
+                                            {typeof thumbnail}
                                             <Image
                                                 src={URL.createObjectURL(
                                                     thumbnail
@@ -249,25 +286,62 @@ const Uploader = () => {
                                 </>
                             ) : (
                                 <>
-                                    <Button
-                                        onClick={() => {
-                                            document
-                                                .getElementById("thumb-trigger")
-                                                ?.click();
-                                        }}
-                                        variant="link"
-                                    >
-                                        Upload Thumbnail
-                                    </Button>
+                                    {!thumbnail ? (
+                                        <Button
+                                            onClick={() => {
+                                                document
+                                                    .getElementById(
+                                                        "thumb-trigger"
+                                                    )
+                                                    ?.click();
+                                            }}
+                                            variant="link"
+                                        >
+                                            Upload Thumbnail
+                                        </Button>
+                                    ) : (
+                                        <div className="flex flex-col">
+                                            {thumbnail ? (
+                                                <>
+                                                    {/* {JSON.stringify(thumbnail)} */}
+                                                    {thumbnail.source ? (
+                                                        <div>Hi</div>
+                                                    ) : null}
+                                                    <Button
+                                                        className="absolute self-end"
+                                                        onClick={
+                                                            handleThumbDelete
+                                                        }
+                                                    >
+                                                        X
+                                                    </Button>
+
+                                                    {/* <Image
+                                                        src={URL.createObjectURL(
+                                                            thumbnail
+                                                        )}
+                                                        alt="thumb"
+                                                        width={200}
+                                                        height={100}
+                                                        style={{
+                                                            width: "100%",
+                                                            height: "100%"
+                                                        }}
+                                                    /> */}
+                                                </>
+                                            ) : null}
+                                        </div>
+                                    )}
                                 </>
                             )}
                         </div>
-                    ) : null}
+                    )}
 
                     <ThumbnailUploader
                         access={session}
                         userId={user?.id}
                         uuid={randomUUID}
+                        onThumbnailUploaded={onThumbnailUploaded}
                     />
                     <Button className="w-full" onClick={handleUpload}>
                         Upload

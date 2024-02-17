@@ -54,9 +54,15 @@ export default async function Profile({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                         <DropdownMenuLabel>{`@${data.display_name}`}</DropdownMenuLabel>
+                        <DropdownMenuItem className="text-slate-300">
+                            <h1>0 Followers</h1>
+                        </DropdownMenuItem>
                         <DropdownMenuSeparator className="bg-white" />
                         <DropdownMenuItem asChild>
-                            <Link href={`/profile/${data.display_name}`}>
+                            <Link
+                                href={`/profile/${data.display_name}`}
+                                className="cursor-pointer"
+                            >
                                 Profile
                             </Link>
                         </DropdownMenuItem>

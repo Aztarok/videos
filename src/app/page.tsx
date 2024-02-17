@@ -20,7 +20,7 @@ const Page = async () => {
     const re: any = /(?:\.([^.]+))?$/;
     return (
         <div>
-            <div className="grid grid-cols-2 gap-10">
+            <div className="grid grid-cols-1 w-[80%] ml-auto mr-auto gap-10">
                 {posts?.map((post) => {
                     let ext: string | null | undefined = re.exec(post.name)[1];
 
@@ -33,11 +33,11 @@ const Page = async () => {
                                 <UserProfile user_id={post.post_by} />
                                 <h1>@{post.profiles?.display_name}</h1>
                             </div>
-                            <div className="w-full h-96 relative rounded-md border-2 flex">
+                            <div className="w-full h-[500px] relative rounded-md border-2 flex">
                                 {ext === "mp4" ? (
                                     <video
                                         controls
-                                        className="rounded-md object-cover object-center"
+                                        className="rounded-md object-cover object-center w-full"
                                     >
                                         <source
                                             src={imageUrlHost + post.image}
@@ -48,6 +48,7 @@ const Page = async () => {
                                         src={imageUrlHost + post.image}
                                         alt={post.description || ""}
                                         fill
+                                        sizes="100vw"
                                         className="rounded-md object-cover object-center"
                                     />
                                 )}
