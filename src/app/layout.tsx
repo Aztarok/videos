@@ -33,7 +33,9 @@ export default function RootLayout({
                             disableTransitionOnChange
                         >
                             <main className="max-w-6xl min-h-screen mx-auto py-10 space-y-10">
-                                <Navbar />
+                                <div className="mb-20">
+                                    <Navbar />
+                                </div>
                                 {children}
                             </main>
                             <Toaster richColors />

@@ -22,12 +22,10 @@ import { Input } from "./ui/input";
 export default function Uploader({
     access,
     userId,
-    uuid,
     onThumbnailUploaded
 }: {
     access: any;
     userId: any;
-    uuid: any;
     onThumbnailUploaded: (thumbnailFile: any, blober: any) => void;
 }) {
     const [blober, setBlober] = useState<any>("");
@@ -74,16 +72,17 @@ export default function Uploader({
     });
 
     const handleUpload = () => {
+        const randomUUID = crypto.randomUUID();
         if (uppy.getFiles().length !== 0) {
             const file = uppy.getFiles()[0];
             uppy.setFileMeta(file.id, {
-                objectName: userId + "/" + uuid + "/" + file.name
+                objectName: userId + "/" + randomUUID + "/" + file.name
             });
             onThumbnailUploaded(file, blober);
             document.getElementById("thumb-trigger")?.click();
             uppy.removeFile(file.id);
         } else {
-            toast.warning("Please adding an image");
+            toast.warning("Please add an image");
         }
     };
 

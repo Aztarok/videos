@@ -98,7 +98,14 @@ export default function Profile({
                                     ?.click();
                             }}
                         >
-                            Upload
+                            Upload Video
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() => {
+                                document.getElementById("upload-post")?.click();
+                            }}
+                        >
+                            Upload Post
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={handleLogout}>
                             Logout

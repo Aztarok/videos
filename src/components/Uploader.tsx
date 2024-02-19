@@ -93,7 +93,7 @@ const Uploader = () => {
     uppy.on("file-added", async (file) => {
         file.meta = {
             ...file.meta,
-            bucketName: "images",
+            bucketName: "postImages",
             contentType: file.type
         };
         if (file.data instanceof File) {
@@ -215,10 +215,15 @@ const Uploader = () => {
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Upload a file</DialogTitle>
-                    <DialogDescription>Select your video</DialogDescription>
+                    <DialogTitle>Create a post</DialogTitle>
+                    <DialogDescription>Add files if you want</DialogDescription>
                 </DialogHeader>
                 <div className="space-y-5">
+                    <Input
+                        placeholder="Write anything you want"
+                        ref={inputRef}
+                    />
+
                     <Dashboard
                         uppy={uppy}
                         className="w-auto"
@@ -231,7 +236,6 @@ const Uploader = () => {
                     <Button onClick={() => handleTransfer(thumbnail, blobers)}>
                         Bruh 3
                     </Button>
-                    <Input placeholder="Image description" ref={inputRef} />
                     {currentFile?.type === "video/mp4" && (
                         <div>
                             <div className="flex justify-between">
@@ -336,11 +340,9 @@ const Uploader = () => {
                             )}
                         </div>
                     )}
-
                     <ThumbnailUploader
                         access={session}
                         userId={user?.id}
-                        uuid={randomUUID}
                         onThumbnailUploaded={onThumbnailUploaded}
                     />
                     <Button className="w-full" onClick={handleUpload}>

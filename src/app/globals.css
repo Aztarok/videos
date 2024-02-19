@@ -107,3 +107,27 @@
 .still-frame:hover {
     opacity: 0;
 }
+
+.uppy-Dashboard-innerWrap {
+    background-color: rgb(17 24 39);
+}
+
+div > .uppy-Dashboard-AddFiles-title {
+    color: white;
+}
+.uppy-Dashboard-AddFiles-title > button {
+    font-weight: bolder;
+    color: rgb(2 132 199);
+}
+
+.uppy-Dashboard-AddFiles-info {
+    display: none !important;
+}
+
+div > .uppy-Dashboard-Item-name {
+    color: white;
+}
+
+div > .uppy-Dashboard-Item-status {
+    color: rgb(87 200 255);
+}
