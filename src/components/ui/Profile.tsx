@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Button } from "./ui/button";
+import { Button } from "./button";
 import Link from "next/link";
 import useUser from "@/app/hook/useUser";
 import Image from "next/image";
@@ -69,15 +69,18 @@ export default function Profile({
                     <DropdownMenuTrigger>
                         <>
                             {data?.image_url ? (
-                                <Image
-                                    src={imageUrl || ""}
-                                    alt={data.display_name || ""}
-                                    width={50}
-                                    height={50}
-                                    className={`${
-                                        fade ? "animate-fade" : ""
-                                    } rounded-full focus:border-none ring-2 cursor-pointer`}
-                                />
+                                <div className="w-[50px]">
+                                    <Image
+                                        src={imageUrl || ""}
+                                        alt={data.display_name || ""}
+                                        width={50}
+                                        height={50}
+                                        priority={true}
+                                        className={`${
+                                            fade ? "animate-fade" : ""
+                                        } rounded-full focus:border-none ring-2 cursor-pointer`}
+                                    />
+                                </div>
                             ) : (
                                 <div className="h-[50px] w-[50px] flex items-center justify-center ring-2 rounded-full text-2xl font-bold cursor-pointer">
                                     <h1>{data.email[0]}</h1>

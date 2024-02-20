@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/components/ui/theme-provider";
 import QueryProvider from "@/components/query-provider";
-import Navbar from "@/components/Navbar";
-import Uploader from "@/components/Uploader";
+import Navbar from "@/components/ui/Navbar";
+import Uploader from "@/components/ui/Uploader";
 import { Toaster } from "@/components/ui/sonner";
-import ThumbnailUploader from "@/components/ThumbnailUploader";
+import ThumbnailUploader from "@/components/ui/ThumbnailUploader";
+import PostsMaker from "@/components/ui/PostsMaker";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,15 +33,14 @@ export default function RootLayout({
                             enableSystem
                             disableTransitionOnChange
                         >
-                            <main className="max-w-6xl min-h-screen mx-auto py-10 space-y-10">
-                                <div className="mb-20">
-                                    <Navbar />
-                                </div>
+                            <main className="max-w-6xl min-h-screen mx-auto">
+                                <Navbar />
                                 {children}
                             </main>
                             <Toaster richColors />
                         </ThemeProvider>
                         <Uploader />
+                        <PostsMaker />
                     </QueryProvider>
                 </body>
             </html>

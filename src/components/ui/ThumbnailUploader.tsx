@@ -16,8 +16,8 @@ import "@uppy/core/dist/style.min.css";
 import "@uppy/dashboard/dist/style.min.css";
 import Tus from "@uppy/tus";
 import { toast } from "sonner";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
+import { Button } from "./button";
+import { Input } from "./input";
 
 export default function Uploader({
     access,

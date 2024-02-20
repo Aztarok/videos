@@ -81,6 +81,9 @@
     box-shadow: 0 0 60px 30px #fff, 0 0 100px 60px #f0f, 0 0 140px 90px #0ff;
 }
 
+.touch-none {
+    display: none;
+}
 .uppy-Dashboard-inner {
     width: auto !important;
     height: 25rem !important;
@@ -110,6 +113,20 @@
 
 .uppy-Dashboard-innerWrap {
     background-color: rgb(17 24 39);
+}
+.uppy-Dashboard-AddFilesPanel > div,
+div.uppy-Dashboard-filesInner,
+.uppy-Dashboard-AddFiles-list,
+.uppy-Dashboard-AddFiles-title,
+.uppy-Dashboard-files,
+.uppy-Dashboard-dropFilesHereHint,
+.uppy-Dashboard-innerWrap,
+.uppy-Dashboard-inner {
+    background-color: rgb(17 24 39);
+}
+
+.uppy-DashboardContent-title {
+    color: white;
 }
 
 div > .uppy-Dashboard-AddFiles-title {

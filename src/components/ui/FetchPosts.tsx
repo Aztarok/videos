@@ -1,4 +1,4 @@
-import Profile from "@/components/Profile";
+import Profile from "@/components/ui/Profile";
 import { supabaseServer } from "@/lib/supabase/server";
 import { Post } from "@/lib/types/custom";
 import Image from "next/image";

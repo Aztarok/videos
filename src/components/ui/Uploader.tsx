@@ -14,8 +14,8 @@ import { toast } from "sonner";
 import {
     generateVideoThumbnails,
     getVideoDurationFromVideoFile
-} from "../index";
-import { Button } from "./ui/button";
+} from "../../index";
+import { Button } from "./button";
 import {
     Dialog,
     DialogContent,
@@ -23,11 +23,11 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger
-} from "./ui/dialog";
-import { Input } from "./ui/input";
-import { Separator } from "./ui/separator";
-import { Slider } from "./ui/slider";
-import { Switch } from "./ui/switch";
+} from "./dialog";
+import { Input } from "./input";
+import { Separator } from "./separator";
+import { Slider } from "./slider";
+import { Switch } from "./switch";
 import ThumbnailUploader from "./ThumbnailUploader";
 import { randomUUID } from "crypto";
 
