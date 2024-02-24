@@ -59,7 +59,7 @@ export default function Profile({
     const imageUrl = imageNew || data?.image_url;
 
     return (
-        <div>
+        <div className="items-center flex">
             {!data?.id ? (
                 <Link href="/auth" className=" animate-fade">
                     <Button variant="outline">SignIn</Button>

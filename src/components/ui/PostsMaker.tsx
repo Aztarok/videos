@@ -23,20 +23,10 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import { Textarea } from "./textarea";
 
-export default function PostsMaker() {
-    const redis = new Redis({
-        url: "https://us1-immense-pigeon-41345.upstash.io",
-        token: "AaGBASQgMjc1NmNiYjktMTliOS00ZDAwLTlmZDMtOTA2YjYzZDkyNGU5MWE5YTUwYTZmNzZmNDY1Mjg4MGRmYjZlMGIxNGFiNmM="
-    });
-    const rateLimit = new Ratelimit({
-        redis: redis,
-        limiter: Ratelimit.slidingWindow(10, "1 h"),
-        analytics: true,
-        prefix: "@upstash/ratelimit"
-    });
-
-    const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>;
+export default function PostsMaker({ up, down }: { up: string; down: string }) {
+    const inputRef = useRef() as React.MutableRefObject<HTMLTextAreaElement>;
     const { data: user } = useUser();
     const supabase = supabaseBrowser();
     const router = useRouter();
@@ -45,15 +35,13 @@ export default function PostsMaker() {
 
     const onBeforeRequest = async (req: any) => {
         const { data } = await supabase.auth.getSession();
-        const { success } = await rateLimit.limit(fileUploadPath);
-        console.log(success);
         req.setHeader("Authorization", `Bearer ${data.session?.access_token}`);
     };
     const [uppy] = useState(() =>
         new Uppy({
             restrictions: {
                 maxNumberOfFiles: 4,
-                allowedFileTypes: ["image/*"],
+                allowedFileTypes: ["image/*", "video/*"],
                 maxFileSize: 10 * 1000 * 1000
             }
         }).use(Tus, {
@@ -69,11 +57,16 @@ export default function PostsMaker() {
             limit: 4
         })
     );
+    function textarea_height(e: any) {
+        const textarea = e.target;
+        textarea.style.height = "auto";
+        textarea.style.height = `${textarea.scrollHeight}px`;
+    }
 
     uppy.on("file-added", (file) => {
         file.meta = {
             ...file.meta,
-            bucketName: "postImages",
+            bucketName: "videos",
             contentType: file.type
         };
     });
@@ -98,8 +91,21 @@ export default function PostsMaker() {
     }
 
     const handleUpload = async () => {
+        // const redisNew = new Redis({
+        //     url: up,
+        //     token: down
+        // });
+
+        // const rate = new Ratelimit({
+        //     redis: redisNew,
+        //     limiter: Ratelimit.slidingWindow(10, "1h"),
+        //     analytics: true,
+        //     prefix: "@upstash/ratelimit"
+        // });
+        const postContent: string = inputRef.current.value;
+
+        const randomUUID = crypto.randomUUID();
         if (uppy.getFiles().length !== 0) {
-            const randomUUID = crypto.randomUUID();
             for (let i = 0; i < uppy.getFiles().length; i++) {
                 uppy.setFileMeta(uppy.getFiles()[i].id, {
                     objectName:
@@ -110,16 +116,37 @@ export default function PostsMaker() {
                         uppy.getFiles()[i].name
                 });
             }
-            await uppy.upload();
+            // const { success } = await rate.limit(user?.id!);
+            const { successful } = await uppy.upload();
+
+            if (!successful) {
+                toast.error("You have to wait before making new posts");
+            }
+            const { data, error } = await supabase
+                .from("posts")
+                .update({ description: postContent })
+                .eq("id", randomUUID);
+            console.log(data, error);
+            toast.success("You made a post!");
+        } else if (postContent) {
+            console.log(postContent);
+            console.log(randomUUID);
+
+            await supabase.from("posts").insert({
+                id: randomUUID,
+                description: postContent,
+                post_by: user?.id!
+            });
+            toast.success("You made a post!");
         } else {
-            toast.warning("Please add an image");
+            toast.warning("Please add content to the post");
         }
     };
 
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <button id="upload-post"></button>
+                <button id="upload-post" className="w-0 h-0"></button>
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>
@@ -128,9 +155,13 @@ export default function PostsMaker() {
                         Write whatever you want
                     </DialogDescription>
                 </DialogHeader>
-                <Input
+                <Textarea
+                    id="text"
+                    typeof="text"
+                    onChange={(e) => textarea_height(e)}
                     placeholder="Beginning of an epic post..."
                     ref={inputRef}
+                    className="no-scrollbar"
                 />
                 <div className=" space-y-5">
                     <span className="underline underline-offset-4">

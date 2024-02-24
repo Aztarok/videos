@@ -211,7 +211,7 @@ const Uploader = () => {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <button id="upload-trigger" />
+                <button id="upload-trigger" className="w-0 h-0" />
             </DialogTrigger>
             <DialogContent>
                 <DialogHeader>

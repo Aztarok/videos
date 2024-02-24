@@ -1,13 +1,14 @@
+import QueryProvider from "@/components/query-provider";
+import Navbar from "@/components/ui/Navbar";
+import PostsMaker from "@/components/ui/PostsMaker";
+import Uploader from "@/components/ui/Uploader";
+import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/ui/theme-provider";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/ui/theme-provider";
-import QueryProvider from "@/components/query-provider";
-import Navbar from "@/components/ui/Navbar";
-import Uploader from "@/components/ui/Uploader";
-import { Toaster } from "@/components/ui/sonner";
-import ThumbnailUploader from "@/components/ui/ThumbnailUploader";
-import PostsMaker from "@/components/ui/PostsMaker";
+import { Redis } from "@upstash/redis";
+import { Ratelimit } from "@upstash/ratelimit";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,7 +26,7 @@ export default function RootLayout({
         <>
             <html lang="en" suppressHydrationWarning>
                 <head />
-                <body>
+                <body className="">
                     <QueryProvider>
                         <ThemeProvider
                             attribute="class"
@@ -33,14 +34,19 @@ export default function RootLayout({
                             enableSystem
                             disableTransitionOnChange
                         >
-                            <main className="max-w-6xl min-h-screen mx-auto">
-                                <Navbar />
-                                {children}
-                            </main>
+                            <Navbar />
+                            {children}
+                            {/* <main className="max-w-screen m-0 ">
+                                <div className="flex">
+                                    <Navbar />
+
+                                    {children}
+                                </div>
+                                <Uploader />
+                                <PostsMaker up={"1"} down={"0"} />
+                            </main> */}
                             <Toaster richColors />
                         </ThemeProvider>
-                        <Uploader />
-                        <PostsMaker />
                     </QueryProvider>
                 </body>
             </html>

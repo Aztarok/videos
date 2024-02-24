@@ -4,18 +4,19 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { supabaseServer } from "@/lib/supabase/server";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 const Page = async () => {
     const supabase = supabaseServer();
     const { data } = await supabase
         .from("posts")
-        .select("*,profiles(display_name,image_url)")
+        .select("*")
         .order("created_at", { ascending: false });
     const imageUrlHost =
         "https://umxjgngsvuacvscuazli.supabase.co/storage/v1/object/public/images/";
     const posts = data?.map((post) => {
         return {
-            image: `${post.post_by}/${post.id}/${post.name}`,
+            // image: `${post.post_by}/${post.id}/${post.name}`,
             ...post
         };
     });
@@ -25,9 +26,10 @@ const Page = async () => {
 
     const re: any = /(?:\.([^.]+))?$/;
     return (
-        <div className="border-x-2 border-slate-600 h-screen">
-            <div className="grid grid-cols-1 w-[80%] ml-auto mr-auto gap-10 ">
-                Wow
+        <div className="border-x-[1px] border-slate-700 max-h-[200vh] w-[598.67px] ">
+            {JSON.stringify(posts)}
+            <Button>Hi</Button>
+            <div className="grid grid-cols-1 w-[60%] ml-auto mr-auto gap-10">
                 {/* {posts?.map((post) => {
                     let ext: string | null | undefined = re.exec(post.name)[1];
 
