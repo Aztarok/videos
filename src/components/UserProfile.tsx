@@ -27,7 +27,7 @@ export default async function Profile({
         .eq("id", user_id)
         .single();
 
-    const imageUrl = imageNew || data?.image_url;
+    const imageUrl = data?.image_url;
 
     return (
         <div>
@@ -43,7 +43,7 @@ export default async function Profile({
                                     height={50}
                                     className={`${
                                         fade ? "animate-fade" : ""
-                                    } rounded-full focus:border-none ring-2 cursor-pointer`}
+                                    } rounded-full focus:border-none ring-2 cursor-pointer outline-none`}
                                 />
                             ) : (
                                 <div className="h-[50px] w-[50px] flex items-center justify-center ring-2 rounded-full text-2xl font-bold cursor-pointer">

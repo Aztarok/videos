@@ -133,6 +133,9 @@ const Navbar = () => {
                         <Button
                             className="text-white font-bold text-[16px] py-6 w-[90%] rounded-full"
                             variant="default"
+                            onClick={() => {
+                                document.getElementById("upload-post")?.click();
+                            }}
                         >
                             Post
                         </Button>

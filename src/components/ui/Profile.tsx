@@ -45,21 +45,25 @@ export default function Profile({
             router.replace("/auth?next=" + pathname);
         }
     };
-    const handleBan = async () => {
-        const supabase = supabaseBrowser();
-        queryClient.clear();
-        if (data) {
-            await adminAuthClient.updateUserById(data.id, {
-                ban_duration: "3h"
-            });
-            handleLogout();
-        }
-    };
-
-    const imageUrl = imageNew || data?.image_url;
+    // const handleBan = async () => {
+    //     const supabase = supabaseBrowser();
+    //     queryClient.clear();
+    //     if (data) {
+    //         await adminAuthClient.updateUserById(data.id, {
+    //             ban_duration: "3h"
+    //         });
+    //         handleLogout();
+    //     }
+    // };
+    let imageUrl;
+    if (imageNew) {
+        imageUrl = imageNew;
+    } else {
+        imageUrl = data?.image_url;
+    }
 
     return (
-        <div className="items-center flex">
+        <div className="items-center flex overflow-x-hidden">
             {!data?.id ? (
                 <Link href="/auth" className=" animate-fade">
                     <Button variant="outline">SignIn</Button>

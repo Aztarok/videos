@@ -66,7 +66,7 @@ export default function PostsMaker({ up, down }: { up: string; down: string }) {
     uppy.on("file-added", (file) => {
         file.meta = {
             ...file.meta,
-            bucketName: "videos",
+            bucketName: "postImages",
             contentType: file.type
         };
     });
@@ -127,8 +127,10 @@ export default function PostsMaker({ up, down }: { up: string; down: string }) {
                 .update({ description: postContent })
                 .eq("id", randomUUID);
             console.log(data, error);
+            document.getElementById("trigger-close")?.click();
+            router.refresh();
             toast.success("You made a post!");
-        } else if (postContent) {
+        } else if (uppy.getFiles().length === 0 && postContent) {
             console.log(postContent);
             console.log(randomUUID);
 
@@ -137,6 +139,8 @@ export default function PostsMaker({ up, down }: { up: string; down: string }) {
                 description: postContent,
                 post_by: user?.id!
             });
+            document.getElementById("trigger-close")?.click();
+            router.refresh();
             toast.success("You made a post!");
         } else {
             toast.warning("Please add content to the post");
@@ -148,7 +152,7 @@ export default function PostsMaker({ up, down }: { up: string; down: string }) {
             <DialogTrigger asChild>
                 <button id="upload-post" className="w-0 h-0"></button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="flex flex-col">
                 <DialogHeader>
                     <DialogTitle>Make A Post</DialogTitle>
                     <DialogDescription>
@@ -163,7 +167,7 @@ export default function PostsMaker({ up, down }: { up: string; down: string }) {
                     ref={inputRef}
                     className="no-scrollbar"
                 />
-                <div className=" space-y-5">
+                <div className="space-y-5">
                     <span className="underline underline-offset-4">
                         Upload some images or videos if you want
                     </span>
@@ -172,7 +176,10 @@ export default function PostsMaker({ up, down }: { up: string; down: string }) {
                         className="w-auto"
                         hideUploadButton
                     />
-                    <Button className="w-full" onClick={handleUpload}>
+                    <Button
+                        className="w-full text-white text-md"
+                        onClick={handleUpload}
+                    >
                         Upload
                     </Button>
                 </div>
