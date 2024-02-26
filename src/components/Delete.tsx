@@ -12,7 +12,6 @@ const Delete = ({ post_name }: { post_name: string }) => {
             const { error } = await supabase.storage
                 .from("postImages")
                 .remove([image]);
-            console.log(error);
         }
         router.refresh();
     };

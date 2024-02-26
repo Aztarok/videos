@@ -102,7 +102,7 @@ export default function Uploader({
                         className="w-auto"
                         hideUploadButton
                     />
-                    <Button
+                    {/* <Button
                         className="w-full"
                         onClick={() => console.log(uppy.getState())}
                     >
@@ -113,7 +113,7 @@ export default function Uploader({
                         onClick={() => console.log(uppy.getFiles()[0])}
                     >
                         Bruh 2
-                    </Button>
+                    </Button> */}
                     <Button className="w-full" onClick={handleUpload}>
                         Continue
                     </Button>

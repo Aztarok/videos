@@ -1,18 +1,9 @@
 import { supabaseServer } from "@/lib/supabase/server";
-import Image from "next/image";
-import Link from "next/link";
 
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
+import UserProfileButton from "./UserProfileButton";
 
-export default async function Profile({
-    fade = true,
+export default async function UserProfile({
+    fade = false,
     imageNew,
     user_id
 }: {
@@ -31,46 +22,7 @@ export default async function Profile({
 
     return (
         <div>
-            {data?.id ? (
-                <DropdownMenu>
-                    <DropdownMenuTrigger>
-                        <>
-                            {data?.image_url ? (
-                                <Image
-                                    src={data.image_url || ""}
-                                    alt={data.display_name || ""}
-                                    width={50}
-                                    height={50}
-                                    className={`${
-                                        fade ? "animate-fade" : ""
-                                    } rounded-full focus:border-none ring-2 cursor-pointer outline-none`}
-                                />
-                            ) : (
-                                <div className="h-[50px] w-[50px] flex items-center justify-center ring-2 rounded-full text-2xl font-bold cursor-pointer">
-                                    <h1>{data?.email[0]}</h1>
-                                </div>
-                            )}
-                        </>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                        <DropdownMenuLabel>{`@${data.display_name}`}</DropdownMenuLabel>
-                        <DropdownMenuItem className="text-slate-300">
-                            <h1>0 Followers</h1>
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator className="bg-white" />
-                        <DropdownMenuItem asChild>
-                            <Link
-                                href={`/profile/${data.display_name}`}
-                                className="cursor-pointer"
-                            >
-                                Profile
-                            </Link>
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            ) : (
-                ""
-            )}
+            {data?.id ? <UserProfileButton data={data} fade={fade} /> : ""}
         </div>
     );
 }

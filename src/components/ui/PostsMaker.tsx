@@ -126,14 +126,10 @@ export default function PostsMaker({ up, down }: { up: string; down: string }) {
                 .from("posts")
                 .update({ description: postContent })
                 .eq("id", randomUUID);
-            console.log(data, error);
             document.getElementById("trigger-close")?.click();
             router.refresh();
             toast.success("You made a post!");
         } else if (uppy.getFiles().length === 0 && postContent) {
-            console.log(postContent);
-            console.log(randomUUID);
-
             await supabase.from("posts").insert({
                 id: randomUUID,
                 description: postContent,

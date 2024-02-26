@@ -26,7 +26,7 @@ export default function RootLayout({
         <>
             <html lang="en" suppressHydrationWarning>
                 <head />
-                <body className="">
+                <body className="flex m-0 overflow-y-scroll">
                     <QueryProvider>
                         <ThemeProvider
                             attribute="class"
@@ -36,15 +36,6 @@ export default function RootLayout({
                         >
                             <Navbar />
                             {children}
-                            {/* <main className="max-w-screen m-0 ">
-                                <div className="flex">
-                                    <Navbar />
-
-                                    {children}
-                                </div>
-                                <Uploader />
-                                <PostsMaker up={"1"} down={"0"} />
-                            </main> */}
                             <PostsMaker up={"1"} down={"0"} />
                             <Toaster richColors />
                         </ThemeProvider>

@@ -15,18 +15,8 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import { PiDotsThreeCircle } from "react-icons/pi";
 import Profile from "./Profile";
 import { supabaseServer } from "@/lib/supabase/server";
+import Link from "next/link";
 const Navbar = () => {
-    // const supabase = supabaseServer();
-    // const { data } = await supabase.auth.getSession();
-    // if (data.session?.user.id) {
-    //     const { data: user } = await supabase
-    //         .from("profiles")
-    //         .select("*")
-    //         .eq("id", data.session.user.id)
-    //         .single();
-    //     console.log(user);
-    // }
-
     return (
         <div className="md:w-[23.5%] lg:w-[28%] xl:w-[35.75%] h-screen ">
             <div className="fixed md:w-[23.5%] lg:w-[28%] xl:w-[35.75%] h-screen">
@@ -40,13 +30,15 @@ const Navbar = () => {
                         </Button>
                     </div>
                     <div className="w-[259px] h-[58px] flex items-center ">
-                        <Button
-                            className="gap-3 pl-2 pr-7 py-6 rounded-full"
-                            variant="ghost"
-                        >
-                            <GoHomeFill className="text-[30px] font-bold " />
-                            <h1 className="text-xl font-normal">Home</h1>
-                        </Button>
+                        <Link href="/">
+                            <Button
+                                className="gap-3 pl-2 pr-7 py-6 rounded-full"
+                                variant="ghost"
+                            >
+                                <GoHomeFill className="text-[30px] font-bold " />
+                                <h1 className="text-xl font-normal">Home</h1>
+                            </Button>
+                        </Link>
                     </div>
                     <div className="w-[259px] h-[58px] flex items-center ">
                         <Button
