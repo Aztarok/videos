@@ -127,13 +127,6 @@ const Uploader = () => {
         setCurrentFile(null);
     });
 
-    const findFiles = () => {
-        for (let i = 0; i < uppy.getFiles().length; i++) {
-            const currentFile = uppy.getFiles()[i];
-            console.log(currentFile);
-        }
-    };
-
     const handleUpload = () => {
         if (uppy.getFiles().length !== 0) {
             uppy.setFileMeta(uppy.getFiles()[0].id, {
@@ -229,13 +222,7 @@ const Uploader = () => {
                         className="w-auto"
                         hideUploadButton
                     />
-                    <Button onClick={() => console.log(uppy.getState())}>
-                        Bruh
-                    </Button>
-                    <Button onClick={() => findFiles()}>Bruh 2</Button>
-                    <Button onClick={() => handleTransfer(thumbnail, blobers)}>
-                        Bruh 3
-                    </Button>
+
                     {currentFile?.type === "video/mp4" && (
                         <div>
                             <div className="flex justify-between">

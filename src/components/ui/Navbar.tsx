@@ -12,14 +12,16 @@ import { BsSlashSquare } from "react-icons/bs";
 import { RiFileListLine } from "react-icons/ri";
 import { FaRegBookmark } from "react-icons/fa6";
 import { Suspense, useEffect, useRef, useState } from "react";
+import { IoPerson } from "react-icons/io5";
 import { PiDotsThreeCircle } from "react-icons/pi";
+import { BsPeople } from "react-icons/bs";
 import Profile from "./Profile";
 import { supabaseServer } from "@/lib/supabase/server";
 import Link from "next/link";
 const Navbar = () => {
     return (
-        <div className="md:w-[23.5%] lg:w-[28%] xl:w-[35.75%] h-screen ">
-            <div className="fixed md:w-[23.5%] lg:w-[28%] xl:w-[35.75%] h-screen">
+        <div className="md:w-[23.5%] lg:w-[28%] xl:w-[35.75%] 2xl:w-[30.7%] h-screen ">
+            <div className="fixed md:w-[23.5%] lg:w-[28%] xl:w-[35.75%] 2xl:w-[30.7%] h-screen">
                 <div className="flex flex-col items-end gap-1.5">
                     <div className="w-[259px] h-[58px] flex items-center">
                         <Button
@@ -45,8 +47,8 @@ const Navbar = () => {
                             className="gap-3 pl-2 pr-7 py-6 rounded-full"
                             variant="ghost"
                         >
-                            <GoHomeFill className="text-[30px] font-bold " />
-                            <h1 className="text-xl font-normal">Home</h1>
+                            <IoIosSearch className="text-[30px] font-bold " />
+                            <h1 className="text-xl font-normal">Explore</h1>
                         </Button>
                     </div>
                     <div className="w-[259px] h-[58px] flex items-center ">
@@ -54,8 +56,10 @@ const Navbar = () => {
                             className="gap-3 pl-2 pr-7 py-6 rounded-full"
                             variant="ghost"
                         >
-                            <GoHomeFill className="text-[30px] font-bold " />
-                            <h1 className="text-xl font-normal">Home</h1>
+                            <TbBell className="text-[30px] font-bold " />
+                            <h1 className="text-xl font-normal">
+                                Notifications
+                            </h1>
                         </Button>
                     </div>
                     <div className="w-[259px] h-[58px] flex items-center ">
@@ -63,8 +67,8 @@ const Navbar = () => {
                             className="gap-3 pl-2 pr-7 py-6 rounded-full"
                             variant="ghost"
                         >
-                            <GoHomeFill className="text-[30px] font-bold " />
-                            <h1 className="text-xl font-normal">Home</h1>
+                            <HiOutlineMail className="text-[30px] font-bold " />
+                            <h1 className="text-xl font-normal">Messages</h1>
                         </Button>
                     </div>
                     <div className="w-[259px] h-[58px] flex items-center ">
@@ -72,8 +76,8 @@ const Navbar = () => {
                             className="gap-3 pl-2 pr-7 py-6 rounded-full"
                             variant="ghost"
                         >
-                            <GoHomeFill className="text-[30px] font-bold " />
-                            <h1 className="text-xl font-normal">Home</h1>
+                            <FaRegBookmark className="text-[30px] font-bold " />
+                            <h1 className="text-xl font-normal">Bookmarks</h1>
                         </Button>
                     </div>
                     <div className="w-[259px] h-[58px] flex items-center ">
@@ -81,8 +85,8 @@ const Navbar = () => {
                             className="gap-3 pl-2 pr-7 py-6 rounded-full"
                             variant="ghost"
                         >
-                            <GoHomeFill className="text-[30px] font-bold " />
-                            <h1 className="text-xl font-normal">Home</h1>
+                            <BsPeople className="text-[30px] font-bold " />
+                            <h1 className="text-xl font-normal">Communities</h1>
                         </Button>
                     </div>
                     <div className="w-[259px] h-[58px] flex items-center ">
@@ -90,8 +94,8 @@ const Navbar = () => {
                             className="gap-3 pl-2 pr-7 py-6 rounded-full"
                             variant="ghost"
                         >
-                            <GoHomeFill className="text-[30px] font-bold " />
-                            <h1 className="text-xl font-normal">Home</h1>
+                            <FaXTwitter className="text-[30px] font-bold " />
+                            <h1 className="text-xl font-normal">Premium</h1>
                         </Button>
                     </div>
                     <div className="w-[259px] h-[58px] flex items-center ">
@@ -99,8 +103,8 @@ const Navbar = () => {
                             className="gap-3 pl-2 pr-7 py-6 rounded-full"
                             variant="ghost"
                         >
-                            <GoHomeFill className="text-[30px] font-bold " />
-                            <h1 className="text-xl font-normal">Home</h1>
+                            <IoPerson className="text-[30px] font-bold " />
+                            <h1 className="text-xl font-normal">Profile</h1>
                         </Button>
                     </div>
                     <div className="w-[259px] h-[58px] flex items-center ">
@@ -108,17 +112,8 @@ const Navbar = () => {
                             className="gap-3 pl-2 pr-7 py-6 rounded-full"
                             variant="ghost"
                         >
-                            <GoHomeFill className="text-[30px] font-bold " />
-                            <h1 className="text-xl font-normal">Home</h1>
-                        </Button>
-                    </div>
-                    <div className="w-[259px] h-[58px] flex items-center ">
-                        <Button
-                            className="gap-3 pl-2 pr-7 py-6 rounded-full"
-                            variant="ghost"
-                        >
-                            <GoHomeFill className="text-[30px] font-bold " />
-                            <h1 className="text-xl font-normal">Home</h1>
+                            <PiDotsThreeCircle className="text-[30px] font-bold " />
+                            <h1 className="text-xl font-normal">More</h1>
                         </Button>
                     </div>
                     <div className="w-[259px] h-[58px] mt-2 flex items-center ">

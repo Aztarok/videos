@@ -9,6 +9,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Redis } from "@upstash/redis";
 import { Ratelimit } from "@upstash/ratelimit";
+import { GlobalContextProvider } from "./Context/store";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,8 +35,10 @@ export default function RootLayout({
                             enableSystem
                             disableTransitionOnChange
                         >
-                            <Navbar />
-                            {children}
+                            <GlobalContextProvider>
+                                <Navbar />
+                                {children}
+                            </GlobalContextProvider>
                             <PostsMaker up={"1"} down={"0"} />
                             <Toaster richColors />
                         </ThemeProvider>

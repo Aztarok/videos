@@ -112,6 +112,11 @@
 .uppy-Dashboard-innerWrap {
     background-color: rgb(17 24 39);
 }
+
+#radix-\\:r1qkq:\\ {
+    overflow-y: scroll;
+}
+.uppy-Dashboard,
 .uppy-Dashboard-AddFilesPanel > div,
 div.uppy-Dashboard-filesInner,
 .uppy-Dashboard-AddFiles-list,
@@ -121,6 +126,10 @@ div.uppy-Dashboard-filesInner,
 .uppy-Dashboard-innerWrap,
 .uppy-Dashboard-inner {
     background-color: rgb(17 24 39);
+}
+
+div > .uppy-Dashboard-inner {
+    max-height: 325px;
 }
 
 .uppy-DashboardContent-title {

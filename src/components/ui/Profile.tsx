@@ -33,7 +33,7 @@ export default function Profile({
     const pathname = usePathname();
 
     if (isFetching) {
-        return <></>;
+        return <>Loading...</>;
     }
 
     const handleLogout = async () => {
@@ -45,23 +45,14 @@ export default function Profile({
             router.replace("/auth?next=" + pathname);
         }
     };
-    // const handleBan = async () => {
-    //     const supabase = supabaseBrowser();
-    //     queryClient.clear();
-    //     if (data) {
-    //         await adminAuthClient.updateUserById(data.id, {
-    //             ban_duration: "3h"
-    //         });
-    //         handleLogout();
-    //     }
-    // };
+
     let imageUrl;
     if (imageNew) {
         imageUrl = imageNew;
     } else {
         imageUrl = data?.image_url;
     }
-
+    const profileCheck = pathname.substring(0, pathname.indexOf("/", 1));
     return (
         <div className="items-center flex overflow-x-hidden">
             {!data?.id ? (
@@ -69,7 +60,7 @@ export default function Profile({
                     <Button variant="outline">SignIn</Button>
                 </Link>
             ) : (
-                <DropdownMenu>
+                <DropdownMenu modal={false}>
                     <DropdownMenuTrigger>
                         <>
                             {data?.image_url ? (
@@ -95,25 +86,7 @@ export default function Profile({
                     <DropdownMenuContent>
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
                         <DropdownMenuSeparator className="bg-white" />
-                        <DropdownMenuItem asChild>
-                            <Link href="/profile">Profile</Link>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                            onClick={() => {
-                                document
-                                    .getElementById("upload-trigger")
-                                    ?.click();
-                            }}
-                        >
-                            Upload Video
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                            onClick={() => {
-                                document.getElementById("upload-post")?.click();
-                            }}
-                        >
-                            Upload Post
-                        </DropdownMenuItem>
+
                         <DropdownMenuItem onClick={handleLogout}>
                             Logout
                         </DropdownMenuItem>

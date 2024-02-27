@@ -55,18 +55,15 @@ const UserProfileButton = ({
                 <DropdownMenuLabel>{`@${data.display_name}`}</DropdownMenuLabel>
                 <DropdownMenuItem className="text-slate-300">
                     <h1>0 Followers</h1>
-                    <h1>{profileCheck}</h1>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-white" />
                 <DropdownMenuItem asChild>
                     <Link
-                        href={{
-                            pathname: `${
-                                profileCheck === "/profile"
-                                    ? data.display_name
-                                    : `profile/${data.display_name}`
-                            }`
-                        }}
+                        href={`${
+                            profileCheck === "/profile"
+                                ? data.display_name
+                                : `profile/${data.display_name}`
+                        }`}
                         className="cursor-pointer"
                     >
                         Profile

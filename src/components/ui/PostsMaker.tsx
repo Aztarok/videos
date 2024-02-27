@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     Dialog,
     DialogContent,
@@ -32,7 +32,7 @@ export default function PostsMaker({ up, down }: { up: string; down: string }) {
     const router = useRouter();
     const fileUploadPath: string =
         process.env.NEXT_PUBLIC_SUPABASE_URL + "/storage/v1/upload/resumable";
-
+    const [postContent, setPostContent] = useState<string>();
     const onBeforeRequest = async (req: any) => {
         const { data } = await supabase.auth.getSession();
         req.setHeader("Authorization", `Bearer ${data.session?.access_token}`);
@@ -61,6 +61,7 @@ export default function PostsMaker({ up, down }: { up: string; down: string }) {
         const textarea = e.target;
         textarea.style.height = "auto";
         textarea.style.height = `${textarea.scrollHeight}px`;
+        setPostContent(inputRef.current.value);
     }
 
     uppy.on("file-added", (file) => {
@@ -79,17 +80,6 @@ export default function PostsMaker({ up, down }: { up: string; down: string }) {
         document.getElementById("trigger-close")?.click();
         router.refresh();
     });
-    function filterAndDelete(keyword: string) {
-        for (let i = 0; i < localStorage.length; i++) {
-            let key = localStorage.key(i);
-            if (key?.includes(keyword)) {
-                localStorage.removeItem(key);
-                // Adjust index after removing an item
-                i--;
-            }
-        }
-    }
-
     const handleUpload = async () => {
         // const redisNew = new Redis({
         //     url: up,
@@ -102,7 +92,6 @@ export default function PostsMaker({ up, down }: { up: string; down: string }) {
         //     analytics: true,
         //     prefix: "@upstash/ratelimit"
         // });
-        const postContent: string = inputRef.current.value;
 
         const randomUUID = crypto.randomUUID();
         if (uppy.getFiles().length !== 0) {
@@ -161,12 +150,22 @@ export default function PostsMaker({ up, down }: { up: string; down: string }) {
                     onChange={(e) => textarea_height(e)}
                     placeholder="Beginning of an epic post..."
                     ref={inputRef}
-                    className="no-scrollbar"
+                    className="no-scrollbar resize-none"
+                    maxLength={300}
                 />
                 <div className="space-y-5">
-                    <span className="underline underline-offset-4">
-                        Upload some images or videos if you want
-                    </span>
+                    <div className="flex justify-between">
+                        <span className="underline underline-offset-4">
+                            Upload some images or videos
+                        </span>
+                        <span className=" underline underline-offset-4">
+                            Characters used{" "}
+                            <span className="text-blue-500 font-bold ">
+                                {postContent?.length}
+                            </span>{" "}
+                            / 300
+                        </span>
+                    </div>
                     <Dashboard
                         uppy={uppy}
                         className="w-auto"

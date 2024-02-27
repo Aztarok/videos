@@ -3,7 +3,7 @@ import { supabaseBrowser } from "@/lib/supabase/browser";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 
-const Delete = ({ post_name }: { post_name: string }) => {
+const Delete = ({ post_name, postId }: { post_name: any; postId: any }) => {
     const router = useRouter();
     const supabase = supabaseBrowser();
     const handleDelete = async () => {
@@ -13,15 +13,13 @@ const Delete = ({ post_name }: { post_name: string }) => {
                 .from("postImages")
                 .remove([image]);
         }
+        await supabase.from("posts").delete().eq("id", postId);
         router.refresh();
     };
     return (
         <>
-            <Button
-                className="place-self-end self-start absolute z-10"
-                onClick={handleDelete}
-            >
-                Delete
+            <Button className="" onClick={handleDelete}>
+                Delete Post
             </Button>
         </>
     );

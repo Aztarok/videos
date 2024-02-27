@@ -102,18 +102,7 @@ export default function Uploader({
                         className="w-auto"
                         hideUploadButton
                     />
-                    {/* <Button
-                        className="w-full"
-                        onClick={() => console.log(uppy.getState())}
-                    >
-                        Bruh
-                    </Button>
-                    <Button
-                        className="w-full"
-                        onClick={() => console.log(uppy.getFiles()[0])}
-                    >
-                        Bruh 2
-                    </Button> */}
+
                     <Button className="w-full" onClick={handleUpload}>
                         Continue
                     </Button>
@@ -122,88 +111,3 @@ export default function Uploader({
         </Dialog>
     );
 }
-// ThumbnailUploader.tsx
-// "use client";
-// import React, { useState } from "react";
-// import Uppy from "@uppy/core";
-// import { Dashboard } from "@uppy/react";
-// import "@uppy/core/dist/style.min.css";
-// import "@uppy/dashboard/dist/style.min.css";
-// import { Button } from "./ui/button";
-// import { Input } from "./ui/input";
-// import { toast } from "sonner";
-// import { useRouter } from "next/navigation";
-// import Tus from "@uppy/tus";
-
-// interface ThumbnailUploaderProps {
-//     access: string;
-//     userId: any;
-//     uuid: string;
-//     onThumbnailUploaded: (thumbnailFile: Blob) => void;
-// }
-
-// const ThumbnailUploader: React.FC<ThumbnailUploaderProps> = ({
-//     access,
-//     userId,
-//     uuid,
-//     onThumbnailUploaded
-// }) => {
-//     const router = useRouter();
-
-//     const onBeforeRequest = async (req: any) => {
-//         req.setHeader("Authorization", `Bearer ${access}`);
-//     };
-
-//     const [uppy] = useState(() =>
-//         new Uppy({
-//             restrictions: {
-//                 maxNumberOfFiles: 2,
-//                 allowedFileTypes: ["image/*", "video/*"],
-//                 maxFileSize: 50 * 1000 * 1000
-//             }
-//         }).use(Tus, {
-//             endpoint:
-//                 process.env.NEXT_PUBLIC_SUPABASE_URL +
-//                 "/storage/v1/upload/resumable",
-//             onBeforeRequest,
-//             allowedMetaFields: [
-//                 "bucketName",
-//                 "objectName",
-//                 "contentType",
-//                 "cacheControl"
-//             ]
-//         })
-//     );
-
-//     const handleUpload = async () => {
-//         uppy.on("upload-success", async () => {
-//             try {
-//                 const file = uppy.getFiles()[0];
-//                 const thumbnailFile = file.data;
-//                 onThumbnailUploaded(thumbnailFile); // Call the callback function with the thumbnail file
-//             } catch (error) {
-//                 console.error("Error getting uploaded file:", error);
-//                 toast.error("Error getting uploaded file");
-//             }
-//         });
-
-//         try {
-//             await uppy.upload();
-//         } catch (error) {
-//             console.error("Error uploading file:", error);
-//             toast.error("Error uploading file");
-//         }
-//     };
-
-//     return (
-//         <div>
-//             <Dashboard className="w-auto" hideUploadButton={true} uppy={uppy} />
-//             <Input placeholder="Image description" />
-//             <Button className="w-full" onClick={handleUpload}>
-//                 Upload
-//             </Button>
-//         </div>
-//     );
-// };
-
-// export default ThumbnailUploader;
