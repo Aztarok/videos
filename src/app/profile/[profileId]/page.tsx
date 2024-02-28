@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import { CustomUser } from "@/lib/types/custom";
 import { headers } from "next/headers";
 
-const Page = () => {
+const Page = ({ params }: { params: string }) => {
     let profilePath;
+    console.log(params);
     const headersList = headers();
     const header_url = headersList.get("x-url") || "";
     const pathname = headersList.get("x-pathname");
