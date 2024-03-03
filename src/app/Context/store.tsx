@@ -1,44 +1,56 @@
 "use client";
-
+import { supabaseBrowser } from "@/lib/supabase/browser";
 import {
     SetStateAction,
     Dispatch,
     createContext,
     useState,
-    useContext
+    useContext,
+    useEffect
 } from "react";
+const supabase = supabaseBrowser();
+const AppContext = createContext<any>(undefined);
 
-type DataType = {
-    firstName: string;
+const initUser = {
+    created_at: "",
+    display_name: "",
+    email: "",
+    id: "",
+    image_url: ""
 };
 
-interface ContextProps {
-    userId: string;
-    setUserId: Dispatch<SetStateAction<string>>;
-    data: DataType[];
-    setData: Dispatch<SetStateAction<DataType[]>>;
+async function getAuthed() {
+    const { data } = await supabase.auth.getSession();
+    if (data.session?.user) {
+        console.log("wow");
+        const { data: user } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", data.session.user.id)
+            .single();
+        return user;
+    }
+    return initUser;
 }
 
-const GlobalContext = createContext<ContextProps>({
-    userId: "",
-    setUserId: (): string => "",
-    data: [],
-    setData: (): DataType[] => []
-});
-
-export const GlobalContextProvider = ({
-    children
-}: {
-    children: React.ReactNode;
-}) => {
-    const [userId, setUserId] = useState("");
-    const [data, setData] = useState<[] | DataType[]>([]);
-
+export function AppWrapper({ children }: { children: React.ReactNode }) {
+    let [state, setState] = useState<any | undefined>(undefined);
+    useEffect(() => {
+        getAuthed()
+            .then((token) => {
+                setState(token);
+            })
+            .catch((error) => {
+                console.error("Error fetching access token: ", error);
+            });
+    }, []);
     return (
-        <GlobalContext.Provider value={{ userId, setUserId, data, setData }}>
+        <AppContext.Provider value={{ state, setState }}>
             {children}
-        </GlobalContext.Provider>
+        </AppContext.Provider>
     );
-};
+}
 
-export const useGlobalContext = () => useContext(GlobalContext);
+export function useAppContext() {
+    return useContext(AppContext);
+}

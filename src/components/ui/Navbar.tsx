@@ -18,7 +18,15 @@ import { BsPeople } from "react-icons/bs";
 import Profile from "./Profile";
 import { supabaseServer } from "@/lib/supabase/server";
 import Link from "next/link";
+import { useAppContext } from "@/app/Context/store";
 const Navbar = () => {
+    const { state, setState } = useAppContext();
+    const handleClick = () => {
+        if (true) {
+            console.log(state);
+            // document.getElementById("upload-post")?.click();
+        }
+    };
     return (
         <div className="md:w-[23.5%] lg:w-[28%] xl:w-[35.75%] 2xl:w-[30.7%] h-screen ">
             <div className="fixed md:w-[23.5%] lg:w-[28%] xl:w-[35.75%] 2xl:w-[30.7%] h-screen">
@@ -120,9 +128,7 @@ const Navbar = () => {
                         <Button
                             className="text-white font-bold text-[16px] py-6 w-[90%] rounded-full"
                             variant="default"
-                            onClick={() => {
-                                document.getElementById("upload-post")?.click();
-                            }}
+                            onClick={handleClick}
                         >
                             Post
                         </Button>

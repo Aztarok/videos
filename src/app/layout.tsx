@@ -9,7 +9,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Redis } from "@upstash/redis";
 import { Ratelimit } from "@upstash/ratelimit";
-import { GlobalContextProvider } from "./Context/store";
+import { headers } from "next/headers";
+import { AppWrapper } from "./Context/store";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,6 +24,8 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const requestUrl = headers().get("x-url");
+    console.log(requestUrl);
     return (
         <>
             <html lang="en" suppressHydrationWarning>
@@ -35,10 +38,11 @@ export default function RootLayout({
                             enableSystem
                             disableTransitionOnChange
                         >
-                            <GlobalContextProvider>
+                            <AppWrapper>
                                 <Navbar />
+                                {requestUrl ? requestUrl : "lol"}
                                 {children}
-                            </GlobalContextProvider>
+                            </AppWrapper>
                             <PostsMaker up={"1"} down={"0"} />
                             <Toaster richColors />
                         </ThemeProvider>
