@@ -22,7 +22,6 @@ const initUser = {
 async function getAuthed() {
     const { data } = await supabase.auth.getSession();
     if (data.session?.user) {
-        console.log("wow");
         const { data: user } = await supabase
             .from("profiles")
             .select("*")

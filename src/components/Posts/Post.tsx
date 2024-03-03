@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import UserProfile from "../UserProfile";
 import Delete from "../Delete";
 import ImageComponent from "./Image";
+import { supabaseServer } from "@/lib/supabase/server";
 
 interface PostProps {
     post: {
@@ -16,11 +17,15 @@ interface PostProps {
     imageUrlHost: string;
 }
 
-const Post: React.FC<PostProps> = ({ post, user, imageUrlHost }) => {
+const Post: React.FC<PostProps> = async ({ post, user, imageUrlHost }) => {
     const images = post.images;
-
+    const supabase = supabaseServer();
     const re = /(?:\.([^.]+))?$/;
-
+    const { data } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
     return (
         <div className="border-b-[2px] border-x-[2px] p-4">
             <div className="flex w-full justify-between">
@@ -32,7 +37,7 @@ const Post: React.FC<PostProps> = ({ post, user, imageUrlHost }) => {
                         />
                     </Suspense>
                 </div>
-                {user?.id === post.post_by && (
+                {(user?.id === post.post_by || data?.role === "admin") && (
                     <Delete post_name={post.images} postId={post.id} />
                 )}
             </div>

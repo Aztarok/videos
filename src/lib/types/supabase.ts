@@ -54,18 +54,21 @@ export type Database = {
                     description: string | null;
                     id: string;
                     post_by: string;
+                    type: string | null;
                 };
                 Insert: {
                     created_at?: string;
                     description?: string | null;
                     id?: string;
                     post_by: string;
+                    type?: string | null;
                 };
                 Update: {
                     created_at?: string;
                     description?: string | null;
                     id?: string;
                     post_by?: string;
+                    type?: string | null;
                 };
                 Relationships: [
                     {
@@ -82,22 +85,28 @@ export type Database = {
                     created_at: string;
                     display_name: string | null;
                     email: string;
+                    handle: string | null;
                     id: string;
                     image_url: string | null;
+                    role: string | null;
                 };
                 Insert: {
                     created_at?: string;
                     display_name?: string | null;
                     email: string;
+                    handle?: string | null;
                     id: string;
                     image_url?: string | null;
+                    role?: string | null;
                 };
                 Update: {
                     created_at?: string;
                     display_name?: string | null;
                     email?: string;
+                    handle?: string | null;
                     id?: string;
                     image_url?: string | null;
+                    role?: string | null;
                 };
                 Relationships: [
                     {

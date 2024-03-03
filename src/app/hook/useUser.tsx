@@ -18,7 +18,6 @@ const useUser = () => {
         queryFn: async () => {
             const supabase = await supabaseBrowser();
             const { data } = await supabase.auth.getSession();
-            console.log("thanks");
             if (data.session?.user) {
                 const { data: user } = await supabase
                     .from("profiles")
