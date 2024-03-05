@@ -15,6 +15,7 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import authCheck from '@/app/actions';
+import { Skeleton } from './skeleton';
 
 export default function Profile({
 	fade = true,
@@ -30,7 +31,17 @@ export default function Profile({
 	const pathname = usePathname();
 
 	if (isFetching) {
-		return <>Loading...</>;
+		return (
+			<>
+				<div className="flex items-center space-x-4">
+					<Skeleton className="h-12 w-12 rounded-full bg-white" />
+					<div className="space-y-2">
+						<Skeleton className="h-4 hidden lg:block w-[180px] bg-white" />
+						<Skeleton className="h-4 hidden lg:block w-[180px] bg-white" />
+					</div>
+				</div>
+			</>
+		);
 	}
 
 	const handleLogout = async () => {

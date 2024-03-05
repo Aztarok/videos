@@ -7,7 +7,9 @@ interface FetchPostsProps {
 	userName?: string;
 }
 
-const FetchPosts: React.FC<FetchPostsProps> = async ({ userName }) => {
+const FetchPosts: React.FC<FetchPostsProps> = async ({
+	userName,
+}: FetchPostsProps) => {
 	const supabase = supabaseServer();
 	const { data } = await supabase
 		.from('posts')
@@ -75,7 +77,7 @@ const FetchPosts: React.FC<FetchPostsProps> = async ({ userName }) => {
 	const user = userData?.user;
 
 	return (
-		<div className="border-slate-700 max-h-[200vh] w-[598.67px] ">
+		<div className="max-h-auto bg-slate-950 w-[598.67px]">
 			{posts.map((post, index) => (
 				<Post
 					key={index}

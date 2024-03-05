@@ -29,7 +29,7 @@ export default function RootLayout({
 		<>
 			<html lang="en" suppressHydrationWarning>
 				<head />
-				<body className="flex m-0 overflow-y-scroll">
+				<body className="flex m-0 overflow-y-scroll bg-zinc-900">
 					<QueryProvider>
 						<ThemeProvider
 							attribute="class"

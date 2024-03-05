@@ -34,7 +34,7 @@ const Post: React.FC<PostProps> = async ({ post, user, imageUrlHost }) => {
 	}
 
 	return (
-		<div className="border-b-[2px] border-x-[2px] p-4">
+		<div className="border-b-[1px] border-x-[1px] p-4 border-slate-400">
 			<div className="flex w-full justify-between">
 				<div className="w-[50px] h-[50px] mb-2">
 					<Suspense>
@@ -51,7 +51,7 @@ const Post: React.FC<PostProps> = async ({ post, user, imageUrlHost }) => {
 			<h1 className="mb-2 h-auto break-words">{post.description}</h1>
 			<div
 				className={cn(
-					'grid rounded-lg overflow-hidden',
+					'grid rounded-xl overflow-hidden border-[#E1E8ED] border-[1px]',
 					images.length === 1
 						? 'grid-cols-1 grid-rows-1'
 						: 'grid-cols-2 grid-rows-2'
