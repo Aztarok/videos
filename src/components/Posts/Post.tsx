@@ -1,10 +1,11 @@
+import React from 'react';
 import { Suspense } from 'react';
-import { cn } from '@/lib/utils';
 import UserProfile from '../UserProfile';
 import Delete from '../Delete';
 import ImageComponent from './Image';
 import { supabaseServer } from '@/lib/supabase/server';
 import VideoComponent from './VideoComponent';
+import { cn } from '@/lib/utils';
 
 interface PostProps {
 	post: {
@@ -19,6 +20,7 @@ interface PostProps {
 }
 
 const Post: React.FC<PostProps> = async ({ post, user, imageUrlHost }) => {
+	const imagePaths = ['png', 'jpg', 'jpeg'];
 	const images = post.images;
 	const supabase = supabaseServer();
 	const re = /(?:\.([^.]+))?$/;
@@ -27,6 +29,10 @@ const Post: React.FC<PostProps> = async ({ post, user, imageUrlHost }) => {
 		.select('*')
 		.eq('id', user.id)
 		.single();
+	function getAspectRatio(extension: string): number {
+		return imagePaths.includes(extension) ? 1 / 1 : 1 / 1; // Adjust aspect ratios as needed
+	}
+
 	return (
 		<div className="border-b-[2px] border-x-[2px] p-4">
 			<div className="flex w-full justify-between">
@@ -53,6 +59,7 @@ const Post: React.FC<PostProps> = async ({ post, user, imageUrlHost }) => {
 			>
 				{images.map((image, index) => {
 					const ext: any = re.exec(post.images[index]);
+					const aspectRatio = 1 / 1;
 					const isLargeImage =
 						images.length === 2 ||
 						(images.length === 3 && index === 0);
@@ -66,7 +73,7 @@ const Post: React.FC<PostProps> = async ({ post, user, imageUrlHost }) => {
 									: 'h-full'
 							} cursor-pointer`}
 						>
-							{ext === 'png' || 'jpg' ? (
+							{imagePaths.includes(ext[1]) ? (
 								<ImageComponent
 									imageUrl={`${imageUrlHost}${image}`}
 									alt={`${index} image`}
@@ -75,9 +82,9 @@ const Post: React.FC<PostProps> = async ({ post, user, imageUrlHost }) => {
 							) : (
 								<VideoComponent
 									videoUrl={`${imageUrlHost}${image}`}
+									aspectRatio={isLargeImage ? 1 / 2 : 1 / 1}
 								/>
 							)}
-							;
 						</div>
 					);
 				})}

@@ -5,9 +5,8 @@ import { supabaseServer } from '@/lib/supabase/server';
 import { CustomUser } from '@/lib/types/custom';
 import { headers } from 'next/headers';
 import { FaArrowLeftLong } from 'react-icons/fa6';
-const Page = ({ params }: { params: string }) => {
+const Page = async ({ params }: { params: string }) => {
 	let profilePath;
-	console.log(params);
 	const headersList = headers();
 	const header_url = headersList.get('x-url') || '';
 	const pathname = headersList.get('x-pathname');
@@ -16,14 +15,13 @@ const Page = ({ params }: { params: string }) => {
 		profilePath = decodeURI(
 			pathname.substring(pathname.indexOf('/', 2) + 1)
 		);
+		const supabase = supabaseServer();
+		// const { data: userData } = await supabase
+		// 	.from('profiles')
+		// 	.select('*')
+		// 	.eq('display_name', profilePath)
+		// 	.single();
 	}
-	const supabase = supabaseServer();
-	const { data: userData } = supabase
-		.from('profiles')
-		.select('*')
-		.eq('display_name', JSON.stringify(pathname))
-		.single();
-	console.log(userData);
 	return (
 		<div className="relative">
 			<div className="w-full h-[53px] flex items-center border-[2px] border-t-0">
