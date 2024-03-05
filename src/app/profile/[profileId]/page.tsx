@@ -1,11 +1,11 @@
 import FetchPosts from '@/components/Posts/FetchPosts';
-import UserProfile from '@/components/UserProfile';
 import { Button } from '@/components/ui/button';
 import { supabaseServer } from '@/lib/supabase/server';
-import { CustomUser } from '@/lib/types/custom';
 import { headers } from 'next/headers';
-import { FaArrowLeftLong } from 'react-icons/fa6';
+import { HiMiniEllipsisHorizontal } from 'react-icons/hi2';
 import RouterBack from './components/RouterBack';
+import { VscEllipsis } from 'react-icons/vsc';
+import FollowOrEdit from './components/FollowOrEdit';
 const Page = async ({ params }: { params: string }) => {
 	let profilePath;
 	const headersList = headers();
@@ -29,9 +29,10 @@ const Page = async ({ params }: { params: string }) => {
 	// 	.select('*', { count: 'exact' })
 	// 	.eq('post_by', userData?.id);
 	numPosts = Number(userData?.posts.length);
+
 	return (
-		<div className="relative">
-			<div className="w-full h-[53px] flex items-center border-[2px] border-t-0">
+		<div className="relative ">
+			<div className="w-full h-[53px] flex items-center border-[1px] border-slate-400 border-t-0">
 				<RouterBack />
 
 				<div className="flex flex-col ml-5">
@@ -43,9 +44,15 @@ const Page = async ({ params }: { params: string }) => {
 					)}
 				</div>
 			</div>
-			<div className="w-full h-[200px] bg-gray-600"></div>
+			<div className="w-full h-[200px] bg-gray-600 border-[1px] border-slate-400 border-t-0"></div>
 			<div className=""></div>
-			<div></div>
+			<div className="w-full h-auto border-x-[1px] border-slate-400">
+				<div className="w-full h-[265px] flex flex-col">
+					<FollowOrEdit userCheck={profilePath} />
+					<div></div>
+				</div>
+				<div className="w-full h-[53px]"></div>
+			</div>
 			<div>
 				<FetchPosts userName={profilePath} />
 			</div>
