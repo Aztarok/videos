@@ -11,6 +11,7 @@ import { Redis } from '@upstash/redis';
 import { Ratelimit } from '@upstash/ratelimit';
 import { headers } from 'next/headers';
 import { AppWrapper } from './Context/store';
+import { Suspense } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -29,7 +30,7 @@ export default function RootLayout({
 		<>
 			<html lang="en" suppressHydrationWarning>
 				<head />
-				<body className="flex m-0 overflow-y-scroll bg-zinc-900">
+				<body className="flex bg-slate-900">
 					<QueryProvider>
 						<ThemeProvider
 							attribute="class"
@@ -38,10 +39,16 @@ export default function RootLayout({
 							disableTransitionOnChange
 						>
 							<AppWrapper>
-								{requestUrl ? <Navbar /> : null}
+								{requestUrl !==
+									'http://localhost:3000/profile' &&
+								requestUrl !== null ? (
+									<Navbar />
+								) : null}
 								{children}
+								<Suspense>
+									<PostsMaker up={'1'} down={'0'} />
+								</Suspense>
 							</AppWrapper>
-							<PostsMaker up={'1'} down={'0'} />
 							<Toaster richColors />
 						</ThemeProvider>
 					</QueryProvider>

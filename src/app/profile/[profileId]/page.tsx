@@ -1,11 +1,8 @@
 import FetchPosts from '@/components/Posts/FetchPosts';
-import { Button } from '@/components/ui/button';
 import { supabaseServer } from '@/lib/supabase/server';
 import { headers } from 'next/headers';
-import { HiMiniEllipsisHorizontal } from 'react-icons/hi2';
-import RouterBack from './components/RouterBack';
-import { VscEllipsis } from 'react-icons/vsc';
 import FollowOrEdit from './components/FollowOrEdit';
+import RouterBack from './components/RouterBack';
 const Page = async ({ params }: { params: string }) => {
 	let profilePath;
 	const headersList = headers();

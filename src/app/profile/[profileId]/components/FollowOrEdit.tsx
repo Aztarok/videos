@@ -5,7 +5,7 @@ import React from 'react';
 import { HiMiniEllipsisHorizontal } from 'react-icons/hi2';
 
 const FollowOrEdit = ({ userCheck }: { userCheck?: string }) => {
-	const { state } = useAppContext();
+	const { state, session } = useAppContext();
 	let edit = false;
 	if (userCheck === state?.display_name) {
 		edit = true;
@@ -16,6 +16,7 @@ const FollowOrEdit = ({ userCheck }: { userCheck?: string }) => {
 				<Button
 					className="bg-gray-600 mr-5 rounded-full px-5"
 					variant="ghost2"
+					onClick={() => console.log(state, session)}
 				>
 					<h1 className="text-md font-bold">Edit Profile</h1>
 				</Button>

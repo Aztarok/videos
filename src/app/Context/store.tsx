@@ -19,33 +19,43 @@ const initUser = {
 	image_url: '',
 };
 
-async function getAuthed() {
-	const { data } = await supabase.auth.getSession();
+export async function getAuthed() {
+	console.log('lol');
+	const { data, error } = await supabase.auth.getSession();
+	if (error) {
+		console.error('Error fetching session: ', error.message);
+		return { user: initUser, session: null };
+	}
 	if (data.session?.user) {
 		const { data: user } = await supabase
 			.from('profiles')
 			.select('*')
 			.eq('id', data.session.user.id)
 			.single();
-		return user;
+
+		return { user, session: data };
 	}
-	return initUser;
+	return { user: initUser, session: null };
 }
 
 export function AppWrapper({ children }: { children: React.ReactNode }) {
 	let [state, setState] = useState<any | undefined>(undefined);
 	let [posts, setPosts] = useState<number | undefined>(0);
+	let [session, setSession] = useState<any>(null);
 	useEffect(() => {
 		getAuthed()
-			.then((token) => {
-				setState(token);
+			.then(({ user, session }) => {
+				setState(user);
+				setSession(session);
 			})
 			.catch((error) => {
 				console.error('Error fetching access token: ', error);
 			});
 	}, []);
 	return (
-		<AppContext.Provider value={{ state, setState, posts, setPosts }}>
+		<AppContext.Provider
+			value={{ state, setState, session, setSession, posts, setPosts }}
+		>
 			{children}
 		</AppContext.Provider>
 	);

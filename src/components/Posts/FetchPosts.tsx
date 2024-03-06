@@ -71,6 +71,7 @@ const FetchPosts: React.FC<FetchPostsProps> = async ({
 			}
 		}
 	}
+	let currentPost: number = 0;
 
 	await getPosts();
 	const { data: userData } = await supabase.auth.getUser();
@@ -78,14 +79,18 @@ const FetchPosts: React.FC<FetchPostsProps> = async ({
 
 	return (
 		<div className="max-h-auto bg-slate-950 w-[598.67px]">
-			{posts.map((post, index) => (
-				<Post
-					key={index}
-					post={post}
-					user={user}
-					imageUrlHost={imageUrlHost}
-				/>
-			))}
+			{posts.map((post, index) => {
+				currentPost++;
+				return (
+					<Post
+						key={index}
+						post={post}
+						user={user}
+						imageUrlHost={imageUrlHost}
+						currentPost={currentPost}
+					/>
+				);
+			})}
 			<div className="grid grid-cols-1 w-[60%] ml-auto mr-auto gap-10"></div>
 		</div>
 	);

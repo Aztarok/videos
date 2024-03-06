@@ -5,12 +5,14 @@ interface ImageProps {
 	imageUrl: string;
 	alt: string;
 	aspectRatio: number;
+	prio: boolean;
 }
 
 const ImageComponent: React.FC<ImageProps> = ({
 	imageUrl,
 	alt,
 	aspectRatio,
+	prio,
 }) => {
 	return (
 		<Image
@@ -18,7 +20,7 @@ const ImageComponent: React.FC<ImageProps> = ({
 			alt={alt}
 			width={0}
 			height={0}
-			priority={true}
+			priority={prio}
 			sizes="100vw"
 			className="object-cover object-center w-full h-full"
 			style={{ aspectRatio }}

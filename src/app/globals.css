@@ -3,120 +3,98 @@
 @tailwind utilities;
 
 @layer base {
-    :root {
-        --background: 0 0% 100%;
-        --foreground: 222.2 84% 4.9%;
-        --card: 0 0% 100%;
-        --card-foreground: 222.2 84% 4.9%;
-        --popover: 0 0% 100%;
-        --popover-foreground: 222.2 84% 4.9%;
-        --primary: 221.2 83.2% 53.3%;
-        --primary-foreground: 210 40% 98%;
-        --secondary: 210 40% 96.1%;
-        --secondary-foreground: 222.2 47.4% 11.2%;
-        --muted: 210 40% 96.1%;
-        --muted-foreground: 215.4 16.3% 46.9%;
-        --accent: 210 40% 96.1%;
-        --accent-foreground: 222.2 47.4% 11.2%;
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 210 40% 98%;
-        --border: 214.3 31.8% 91.4%;
-        --input: 214.3 31.8% 91.4%;
-        --ring: 221.2 83.2% 53.3%;
-        --radius: 0.75rem;
-    }
+	:root {
+		--background: 0 0% 100%;
+		--foreground: 222.2 84% 4.9%;
+		--card: 0 0% 100%;
+		--card-foreground: 222.2 84% 4.9%;
+		--popover: 0 0% 100%;
+		--popover-foreground: 222.2 84% 4.9%;
+		--primary: 221.2 83.2% 53.3%;
+		--primary-foreground: 210 40% 98%;
+		--secondary: 210 40% 96.1%;
+		--secondary-foreground: 222.2 47.4% 11.2%;
+		--muted: 210 40% 96.1%;
+		--muted-foreground: 215.4 16.3% 46.9%;
+		--accent: 210 40% 96.1%;
+		--accent-foreground: 222.2 47.4% 11.2%;
+		--destructive: 0 84.2% 60.2%;
+		--destructive-foreground: 210 40% 98%;
+		--border: 214.3 31.8% 91.4%;
+		--input: 214.3 31.8% 91.4%;
+		--ring: 221.2 83.2% 53.3%;
+		--radius: 0.75rem;
+	}
 
-    .dark {
-        --background: 222.2 84% 4.9%;
-        --foreground: 210 40% 98%;
-        --card: 222.2 84% 4.9%;
-        --card-foreground: 210 40% 98%;
-        --popover: 222.2 84% 4.9%;
-        --popover-foreground: 210 40% 98%;
-        --primary: 217.2 91.2% 59.8%;
-        --primary-foreground: 222.2 47.4% 11.2%;
-        --secondary: 217.2 32.6% 17.5%;
-        --secondary-foreground: 210 40% 98%;
-        --muted: 217.2 32.6% 17.5%;
-        --muted-foreground: 215 20.2% 65.1%;
-        --accent: 217.2 32.6% 17.5%;
-        --accent-foreground: 210 40% 98%;
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 210 40% 98%;
-        --border: 217.2 32.6% 17.5%;
-        --input: 217.2 32.6% 17.5%;
-        --ring: 224.3 76.3% 48%;
-    }
+	.dark {
+		--background: 222.2 84% 4.9%;
+		--foreground: 210 40% 98%;
+		--card: 222.2 84% 4.9%;
+		--card-foreground: 210 40% 98%;
+		--popover: 222.2 84% 4.9%;
+		--popover-foreground: 210 40% 98%;
+		--primary: 217.2 91.2% 59.8%;
+		--primary-foreground: 222.2 47.4% 11.2%;
+		--secondary: 217.2 32.6% 17.5%;
+		--secondary-foreground: 210 40% 98%;
+		--muted: 217.2 32.6% 17.5%;
+		--muted-foreground: 215 20.2% 65.1%;
+		--accent: 217.2 32.6% 17.5%;
+		--accent-foreground: 210 40% 98%;
+		--destructive: 0 62.8% 30.6%;
+		--destructive-foreground: 210 40% 98%;
+		--border: 217.2 32.6% 17.5%;
+		--input: 217.2 32.6% 17.5%;
+		--ring: 224.3 76.3% 48%;
+	}
 }
 
 @layer base {
-    * {
-        @apply border-border;
-    }
-    body {
-        @apply bg-background text-foreground;
-    }
+	* {
+		@apply border-border;
+	}
+	body {
+		@apply bg-background text-foreground;
+	}
 }
 
 @layer utilities {
-    .no-scrollbar::-webkit-scrollbar {
-        display: none;
-    }
-    .no-scrollbar {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-    }
+	.no-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
+	.no-scrollbar {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
 }
 .preview {
-    box-shadow: 0 0 60px 30px #ffffff, 0 0 100px 60px #f0f, 0 0 140px 90px #0ff;
+	box-shadow: 0 0 60px 30px #ffffff, 0 0 100px 60px #f0f, 0 0 140px 90px #0ff;
 }
 .glowBox {
-    position: absolute;
-    top: calc(50% - 20px);
-    left: calc(50% - 20px);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: #fff;
-    box-shadow: 0 0 60px 30px #fff, 0 0 100px 60px #f0f, 0 0 140px 90px #0ff;
+	position: absolute;
+	top: calc(50% - 20px);
+	left: calc(50% - 20px);
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background-color: #fff;
+	box-shadow: 0 0 60px 30px #fff, 0 0 100px 60px #f0f, 0 0 140px 90px #0ff;
 }
 
 .touch-none {
-    display: none;
+	display: none;
 }
 .uppy-Dashboard-inner {
-    width: auto !important;
-    height: 25rem !important;
-}
-
-.hi {
-    background-color: red;
-}
-
-.vid {
-    position: relative;
-}
-
-.vid Image {
-    position: absolute;
-}
-
-.still-frame {
-    z-index: 1;
-    transition: opacity 250ms;
-    opacity: 1;
-}
-
-.still-frame:hover {
-    opacity: 0;
+	width: auto !important;
+	height: 25rem !important;
 }
 
 .uppy-Dashboard-innerWrap {
-    background-color: rgb(17 24 39);
+	background-color: rgb(17 24 39);
 }
 
 #radix-\\:r1qkq:\\ {
-    overflow-y: scroll;
+	overflow-y: scroll;
 }
 .uppy-Dashboard,
 .uppy-Dashboard-AddFilesPanel > div,
@@ -127,68 +105,44 @@ div.uppy-Dashboard-filesInner,
 .uppy-Dashboard-dropFilesHereHint,
 .uppy-Dashboard-innerWrap,
 .uppy-Dashboard-inner {
-    background-color: rgb(17 24 39);
+	background-color: rgb(17 24 39);
 }
 
 div > .uppy-Dashboard-inner {
-    max-height: 325px;
+	max-height: 325px;
 }
 
 .uppy-DashboardContent-title {
-    color: white;
+	color: white;
 }
 
 div > .uppy-Dashboard-AddFiles-title {
-    color: white;
+	color: white;
 }
 .uppy-Dashboard-AddFiles-title > button {
-    font-weight: bolder;
-    color: rgb(2 132 199);
+	font-weight: bolder;
+	color: rgb(2 132 199);
 }
 
 .uppy-Dashboard-AddFiles-info {
-    display: none !important;
+	display: none !important;
 }
 
 div > .uppy-Dashboard-Item-name {
-    color: white;
+	color: white;
 }
 
 div > .uppy-Dashboard-Item-status {
-    color: rgb(87 200 255);
+	color: rgb(87 200 255);
 }
 
 .stick {
-    position: sticky;
-    top: 0;
-    justify-content: flex-start;
-    align-self: start;
-    overflow-y: auto;
-}
-
-/* body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    display: flex;
-    flex-direction: row;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 20px;
-    color: white;
-} */
-.main {
-    width: 30%;
-    margin-bottom: 20px;
-    margin-top: 20px;
-}
-
-.main div {
-    width: 100%;
-    height: 200px;
-    background: linear-gradient(45deg, #feeeab 0%, #fb7eb3 60%);
-    margin-bottom: 20px;
-    border-radius: 10px;
+	position: sticky;
+	top: 0;
+	justify-content: flex-start;
+	align-self: start;
+	overflow-y: auto;
 }
 .scroll {
-    overflow-y: scroll;
+	overflow-y: scroll;
 }

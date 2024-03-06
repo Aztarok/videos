@@ -36,8 +36,8 @@ export default function Profile({
 				<div className="flex items-center space-x-4">
 					<Skeleton className="h-12 w-12 rounded-full bg-white" />
 					<div className="space-y-2">
-						<Skeleton className="h-4 hidden lg:block w-[180px] bg-white" />
-						<Skeleton className="h-4 hidden lg:block w-[180px] bg-white" />
+						<Skeleton className="h-4 hidden xl:block w-[180px] bg-white" />
+						<Skeleton className="h-4 hidden xl:block w-[180px] bg-white" />
 					</div>
 				</div>
 			</>
@@ -82,7 +82,7 @@ export default function Profile({
 									/>
 								</div>
 							) : (
-								<div className="h-[50px] w-[50px] flex items-center justify-center ring-2 rounded-full text-2xl font-bold cursor-pointer">
+								<div className="h-[50px] w-[50px] flex items-center justify-center rounded-full text-2xl font-bold cursor-pointer">
 									<h1>{data.email[0]}</h1>
 								</div>
 							)}

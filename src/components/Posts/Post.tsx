@@ -17,9 +17,15 @@ interface PostProps {
 	};
 	user: any; // Adjust type as per your user data structure
 	imageUrlHost: string;
+	currentPost: number;
 }
 
-const Post: React.FC<PostProps> = async ({ post, user, imageUrlHost }) => {
+const Post: React.FC<PostProps> = async ({
+	post,
+	user,
+	imageUrlHost,
+	currentPost,
+}) => {
 	const imagePaths = ['png', 'jpg', 'jpeg'];
 	const images = post.images;
 	const supabase = supabaseServer();
@@ -29,9 +35,16 @@ const Post: React.FC<PostProps> = async ({ post, user, imageUrlHost }) => {
 		.select('*')
 		.eq('id', user.id)
 		.single();
+	let loadType = false;
+	if (currentPost === 1) {
+		loadType = true;
+	} else {
+		loadType = false;
+	}
 	function getAspectRatio(extension: string): number {
 		return imagePaths.includes(extension) ? 1 / 1 : 1 / 1; // Adjust aspect ratios as needed
 	}
+	let imagePrio = false;
 
 	return (
 		<div className="border-b-[1px] border-x-[1px] p-4 border-slate-400">
@@ -51,10 +64,11 @@ const Post: React.FC<PostProps> = async ({ post, user, imageUrlHost }) => {
 			<h1 className="mb-2 h-auto break-words">{post.description}</h1>
 			<div
 				className={cn(
-					'grid rounded-xl overflow-hidden border-[#E1E8ED] border-[1px]',
+					'grid rounded-xl overflow-hidden',
 					images.length === 1
 						? 'grid-cols-1 grid-rows-1'
-						: 'grid-cols-2 grid-rows-2'
+						: 'grid-cols-2 grid-rows-2',
+					images.length === 0 ? '' : 'border-[#E1E8ED] border-[1px]'
 				)}
 			>
 				{images.map((image, index) => {
@@ -63,7 +77,11 @@ const Post: React.FC<PostProps> = async ({ post, user, imageUrlHost }) => {
 					const isLargeImage =
 						images.length === 2 ||
 						(images.length === 3 && index === 0);
-
+					if (index === 0) {
+						imagePrio = true;
+					} else {
+						imagePrio = false;
+					}
 					return (
 						<div
 							key={index}
@@ -78,6 +96,7 @@ const Post: React.FC<PostProps> = async ({ post, user, imageUrlHost }) => {
 									imageUrl={`${imageUrlHost}${image}`}
 									alt={`${index} image`}
 									aspectRatio={isLargeImage ? 1 / 2 : 1 / 1}
+									prio={loadType}
 								/>
 							) : (
 								<VideoComponent
