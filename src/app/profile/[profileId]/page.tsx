@@ -3,6 +3,7 @@ import { supabaseServer } from '@/lib/supabase/server';
 import { headers } from 'next/headers';
 import FollowOrEdit from './components/FollowOrEdit';
 import RouterBack from './components/RouterBack';
+import { Suspense } from 'react';
 const Page = async ({ params }: { params: string }) => {
 	let profilePath;
 	const headersList = headers();
@@ -28,27 +29,33 @@ const Page = async ({ params }: { params: string }) => {
 	numPosts = Number(userData?.posts.length);
 
 	return (
-		<div className="relative ">
-			<div className="w-full h-[53px] flex items-center border-[1px] border-slate-400 border-t-0">
-				<RouterBack />
+		<div className="relative bg-slate-950 ">
+			<div className="w-full h-[253px] flex flex-col">
+				<div className="w-full h-[53px] flex items-center border-[1px] border-slate-400 border-t-0">
+					<RouterBack />
 
-				<div className="flex flex-col ml-5">
-					<h1 className="font-bold text-xl">{profilePath}</h1>
-					{numPosts !== undefined && (
-						<h1 className="text-xs text-gray-400 font-semibold">
-							{numPosts} posts
-						</h1>
-					)}
+					<div className="flex flex-col ml-5">
+						<h1 className="font-bold text-xl">{profilePath}</h1>
+						{numPosts !== undefined && (
+							<h1 className="text-xs text-gray-400 font-semibold">
+								{numPosts} posts
+							</h1>
+						)}
+					</div>
 				</div>
+				<div className="w-full bg-gray-600 border-[1px] border-slate-400 border-t-0 flex-1"></div>
 			</div>
-			<div className="w-full h-[200px] bg-gray-600 border-[1px] border-slate-400 border-t-0"></div>
 			<div className=""></div>
 			<div className="w-full h-auto border-x-[1px] border-slate-400">
-				<div className="w-full h-[265px] flex flex-col">
-					<FollowOrEdit userCheck={profilePath} />
-					<div></div>
+				<div className="w-full h-[310px] flex flex-col">
+					<Suspense>
+						<FollowOrEdit
+							userCheck={profilePath}
+							userData={userData}
+						/>
+					</Suspense>
 				</div>
-				<div className="w-full h-[53px]"></div>
+				<div className="w-full h-[53px] border-b-[1px] border-slate-400"></div>
 			</div>
 			<div>
 				<FetchPosts userName={profilePath} />

@@ -46,7 +46,7 @@ export default function RootLayout({
 								) : null}
 								{children}
 								<Suspense>
-									<PostsMaker up={'1'} down={'0'} />
+									<PostsMaker />
 								</Suspense>
 							</AppWrapper>
 							<Toaster richColors />

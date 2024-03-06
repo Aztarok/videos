@@ -1,5 +1,4 @@
 'use client';
-import React, { useEffect, useRef, useState } from 'react';
 import {
 	Dialog,
 	DialogContent,
@@ -8,38 +7,31 @@ import {
 	DialogTitle,
 	DialogTrigger,
 } from '@/components/ui/dialog';
+import React, { useEffect, useRef, useState } from 'react';
 
 import Uppy from '@uppy/core';
 import { Dashboard } from '@uppy/react';
 
+import { useAppContext } from '@/app/Context/store';
+import { supabaseBrowser } from '@/lib/supabase/browser';
 import '@uppy/core/dist/style.min.css';
 import '@uppy/dashboard/dist/style.min.css';
-import { Button } from './button';
 import Tus from '@uppy/tus';
-import useUser from '@/app/hook/useUser';
-import { supabaseBrowser } from '@/lib/supabase/browser';
-import { Input } from './input';
-import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { Ratelimit } from '@upstash/ratelimit';
-import { Redis } from '@upstash/redis';
+import { toast } from 'sonner';
+import { Button } from './button';
 import { Textarea } from './textarea';
-import { useAppContext } from '@/app/Context/store';
 
-export default function PostsMaker({ up, down }: { up: string; down: string }) {
+export default function PostsMaker() {
 	const inputRef = useRef() as React.MutableRefObject<HTMLTextAreaElement>;
-	const { data: user } = useUser();
 	const supabase = supabaseBrowser();
 	const router = useRouter();
 	const fileUploadPath: string =
 		process.env.NEXT_PUBLIC_SUPABASE_URL + '/storage/v1/upload/resumable';
 	const [postContent, setPostContent] = useState<string>();
-	const { session } = useAppContext();
+	const { state, session } = useAppContext();
 	const [uppy, setUppy] = useState<Uppy>();
 	const onBeforeRequest = async (req: any) => {
-		// const { data } = await supabase.auth.getSession();
-		// req.setHeader('Authorization', `Bearer ${data.session?.access_token}`);
-
 		req.setHeader(
 			'Authorization',
 			`Bearer ${session.session.access_token}`
@@ -73,30 +65,9 @@ export default function PostsMaker({ up, down }: { up: string; down: string }) {
 			};
 		}
 	}, [session]);
-	if (!session || !uppy) {
-		return null; // or render a loading indicator
+	if (!session || !uppy || !state) {
+		return null;
 	}
-
-	// const [uppy] = useState(() =>
-	// 	new Uppy({
-	// 		restrictions: {
-	// 			maxNumberOfFiles: 4,
-	// 			allowedFileTypes: ['image/*', 'video/*'],
-	// 			maxFileSize: 10 * 1000 * 1000,
-	// 		},
-	// 	}).use(Tus, {
-	// 		endpoint: fileUploadPath,
-	// 		onBeforeRequest,
-	// 		allowedMetaFields: [
-	// 			'bucketName',
-	// 			'objectName',
-	// 			'contentType',
-	// 			'cacheControl',
-	// 		],
-	// 		removeFingerprintOnSuccess: true,
-	// 		limit: 4,
-	// 	})
-	// );
 	function textarea_height(e: any) {
 		const textarea = e.target;
 		textarea.style.height = 'auto';
@@ -121,31 +92,19 @@ export default function PostsMaker({ up, down }: { up: string; down: string }) {
 		router.refresh();
 	});
 	const handleUpload = async () => {
-		// const redisNew = new Redis({
-		//     url: up,
-		//     token: down
-		// });
-
-		// const rate = new Ratelimit({
-		//     redis: redisNew,
-		//     limiter: Ratelimit.slidingWindow(10, "1h"),
-		//     analytics: true,
-		//     prefix: "@upstash/ratelimit"
-		// });
-
 		const randomUUID = crypto.randomUUID();
 		if (uppy.getFiles().length !== 0) {
 			for (let i = 0; i < uppy.getFiles().length; i++) {
 				uppy.setFileMeta(uppy.getFiles()[i].id, {
 					objectName:
-						user?.id +
+						state?.id +
 						'/' +
 						randomUUID +
 						'/' +
 						uppy.getFiles()[i].name,
 				});
 			}
-			// const { success } = await rate.limit(user?.id!);
+
 			const { successful } = await uppy.upload();
 
 			if (!successful) {
@@ -162,7 +121,7 @@ export default function PostsMaker({ up, down }: { up: string; down: string }) {
 			await supabase.from('posts').insert({
 				id: randomUUID,
 				description: postContent,
-				post_by: user?.id!,
+				post_by: state?.id!,
 			});
 			document.getElementById('trigger-close')?.click();
 			router.refresh();

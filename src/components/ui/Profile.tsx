@@ -54,6 +54,14 @@ export default function Profile({
 			authCheck();
 		}
 	};
+	const handlePath = async () => {
+		console.log(pathname);
+		if (protectedPaths.includes(pathname)) {
+			console.log('true');
+		} else {
+			console.log('false');
+		}
+	};
 
 	let imageUrl;
 	if (imageNew) {
@@ -78,7 +86,7 @@ export default function Profile({
 										priority={true}
 										className={`${
 											fade ? 'animate-fade' : ''
-										} rounded-full focus:border-none cursor-pointer`}
+										} rounded-full focus:border-none outline-none cursor-pointer`}
 									/>
 								</div>
 							) : (
@@ -94,6 +102,9 @@ export default function Profile({
 
 						<DropdownMenuItem onClick={handleLogout}>
 							Logout
+						</DropdownMenuItem>
+						<DropdownMenuItem onClick={handlePath}>
+							Pathname
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
