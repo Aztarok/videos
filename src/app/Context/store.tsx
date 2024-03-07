@@ -8,6 +8,7 @@ import {
 	useContext,
 	useEffect,
 } from 'react';
+import useFollowing from '../hook/getFollowing';
 const supabase = supabaseBrowser();
 const AppContext = createContext<any>(undefined);
 
@@ -52,9 +53,19 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
 				console.error('Error fetching access token: ', error);
 			});
 	}, []);
+	const { data: followingData } = useFollowing({ userWho: state });
+	const following = new Set(followingData);
 	return (
 		<AppContext.Provider
-			value={{ state, setState, session, setSession, posts, setPosts }}
+			value={{
+				state,
+				setState,
+				session,
+				setSession,
+				posts,
+				setPosts,
+				following,
+			}}
 		>
 			{children}
 		</AppContext.Provider>

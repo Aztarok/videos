@@ -3,6 +3,7 @@
 import { supabaseBrowser } from '@/lib/supabase/browser';
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
+import authCheck from '../actions';
 
 const initUser = {
 	created_at: '',
@@ -23,7 +24,6 @@ const useFollowers = ({ userWho }: { userWho?: any }) => {
 					.from('Follows')
 					.select('follower_id')
 					.eq('following_id', userWho.id);
-
 				console.log('followers', followers);
 				return followers;
 			}

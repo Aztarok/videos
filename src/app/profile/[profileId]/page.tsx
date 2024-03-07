@@ -10,6 +10,9 @@ const Page = async ({ params }: { params: string }) => {
 	const header_url = headersList.get('x-url') || '';
 	const pathname = headersList.get('x-pathname');
 	const origin_url = headersList.get('x-origin');
+	const followme = headersList.get('followingBruh');
+	const followme2 = new Set(JSON.parse(followme!));
+	console.log(followme2);
 	const supabase = supabaseServer();
 	let numPosts: number;
 	if (!pathname || !origin_url || !header_url) {
@@ -52,6 +55,7 @@ const Page = async ({ params }: { params: string }) => {
 						<FollowOrEdit
 							userCheck={profilePath}
 							userData={userData}
+							mine={followme2}
 						/>
 					</Suspense>
 				</div>

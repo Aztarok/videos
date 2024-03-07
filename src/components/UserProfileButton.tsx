@@ -2,7 +2,7 @@
 import { CustomUser } from '@/lib/types/custom';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -11,6 +11,9 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from './ui/dropdown-menu';
+import { getAuthed } from '@/app/Context/store';
+import { useQueryClient } from '@tanstack/react-query';
+import authCheck from '@/app/actions';
 
 const UserProfileButton = ({
 	data,
@@ -30,9 +33,17 @@ const UserProfileButton = ({
 		imageUrl: data.image_url || '',
 	}).toString();
 	const profileCheck = pathname.substring(0, pathname.indexOf('/', 1));
+	const router = useRouter();
+	const queryClient = useQueryClient();
+	const handleClick = async () => {
+		queryClient.clear();
+
+		router.refresh();
+		authCheck();
+	};
 	return (
 		<DropdownMenu modal={false}>
-			<DropdownMenuTrigger>
+			<DropdownMenuTrigger className="outline-none">
 				<>
 					{data?.image_url ? (
 						<Image
@@ -59,6 +70,7 @@ const UserProfileButton = ({
 				<DropdownMenuSeparator className="bg-white" />
 				<DropdownMenuItem asChild>
 					<Link
+						onClick={handleClick}
 						href={`${
 							profileCheck === '/profile'
 								? data.display_name

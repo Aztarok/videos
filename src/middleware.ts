@@ -67,6 +67,12 @@ export async function middleware(request: NextRequest) {
 			requestHeaders.set('x-url', request.url);
 			requestHeaders.set('x-origin', origin);
 			requestHeaders.set('x-pathname', pathname);
+			const { data: following } = await supabase
+				.from('Follows')
+				.select('following_id')
+				.eq('follower_id', data.session.user.id);
+			const following2 = following?.map((item) => item.following_id);
+			requestHeaders.set('followingBruh', JSON.stringify(following2));
 
 			return NextResponse.next({
 				request: {
