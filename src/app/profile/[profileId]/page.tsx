@@ -12,7 +12,6 @@ const Page = async ({ params }: { params: string }) => {
 	const origin_url = headersList.get('x-origin');
 	const followme = headersList.get('followingBruh');
 	const followme2 = new Set(JSON.parse(followme!));
-	console.log(followme2);
 	const supabase = supabaseServer();
 	let numPosts: number;
 	if (!pathname || !origin_url || !header_url) {

@@ -53,8 +53,6 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
 				console.error('Error fetching access token: ', error);
 			});
 	}, []);
-	const { data: followingData } = useFollowing({ userWho: state });
-	const following = new Set(followingData);
 	return (
 		<AppContext.Provider
 			value={{
@@ -64,7 +62,6 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
 				setSession,
 				posts,
 				setPosts,
-				following,
 			}}
 		>
 			{children}
