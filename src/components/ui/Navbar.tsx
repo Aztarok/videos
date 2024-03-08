@@ -20,6 +20,7 @@ const Navbar = () => {
             document.getElementById("upload-post")?.click();
         }
     };
+
     return (
         <div className="md:w-[13.5%] lg:w-[13.5%] xl:w-[26%] 2xl:w-[30.7%] h-screen">
             <div className="fixed md:w-[13.5%] lg:w-[13.5%] xl:w-[26%] 2xl:w-[30.7%] h-screen">
@@ -113,15 +114,17 @@ const Navbar = () => {
                             </Button>
                         </div>
                         <div className=" flex items-center ">
-                            <Button
-                                className="gap-3 pl-2 pr-2 xl:pr-7 xl:py-6 rounded-full"
-                                variant="ghost"
-                            >
-                                <IoPerson className="text-[30px] font-bold " />
-                                <h1 className="text-xl font-normal hidden xl:block">
-                                    Profile
-                                </h1>
-                            </Button>
+                            <Link href={`/profile/${state?.handle}`}>
+                                <Button
+                                    className="gap-3 pl-2 pr-2 xl:pr-7 xl:py-6 rounded-full"
+                                    variant="ghost"
+                                >
+                                    <IoPerson className="text-[30px] font-bold " />
+                                    <h1 className="text-xl font-normal hidden xl:block">
+                                        Profile
+                                    </h1>
+                                </Button>
+                            </Link>
                         </div>
                         <div className=" flex items-center ">
                             <Button

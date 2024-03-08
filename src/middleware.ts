@@ -63,8 +63,13 @@ export async function middleware(request: NextRequest) {
             .select("*")
             .eq("id", data.session.user.id)
             .single();
-        if (!user.handle && url.pathname !== "/somepage") {
-            return NextResponse.redirect(new URL("/somepage", request.url));
+        console.log(url.pathname);
+        if (!user.handle) {
+            if (url.pathname === "/somepage") {
+                return response;
+            } else {
+                return NextResponse.redirect(new URL("/somepage", request.url));
+            }
         }
         if (url.pathname === "/auth" || url.pathname! === "/somepage") {
             return NextResponse.redirect(new URL("/", request.url));
