@@ -18,7 +18,6 @@ const useFollowers = ({ userWho }: { userWho?: any }) => {
         queryKey: ["followers"],
         queryFn: async () => {
             const supabase = await supabaseBrowser();
-            const { data } = await supabase.auth.getSession();
             const { data: followers } = await supabase
                 .from("Follows")
                 .select("follower_id")

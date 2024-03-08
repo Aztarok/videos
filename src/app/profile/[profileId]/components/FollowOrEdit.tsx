@@ -16,11 +16,13 @@ interface FollowData {
 const FollowOrEdit = ({
     userCheck,
     userData,
-    mine
+    followersTotal,
+    followingTotal
 }: {
     userCheck?: string;
     userData: any;
-    mine: any;
+    followersTotal: any;
+    followingTotal: any;
 }) => {
     const router = useRouter();
     const { state } = useAppContext();
@@ -29,13 +31,9 @@ const FollowOrEdit = ({
     if (userCheck === state?.display_name) {
         edit = true;
     }
-    const [followersDataNum, setFollowersDataNum] = useState(0);
-    const [mineNum, setMineNum] = useState(0);
-    const [followingNum, setFollowingNum] = useState(0);
     const [followed, setFollowed] = useState(false);
-
-    const { data: followersData } = useFollowers({ userWho: userData });
-    const { data: followingData } = useFollowing({ userWho: userData });
+    const [followers, setFollowers] = useState<number>(followersTotal.size);
+    const [following] = useState<number>(followingTotal.size);
 
     let displayFollows = false;
     if (state?.id === userData.id) {
@@ -44,15 +42,6 @@ const FollowOrEdit = ({
 
     const editProfile = () => {
         router.refresh();
-    };
-    const getNums = async () => {
-        console.log(userData.id);
-        const { data, count } = await supabase
-            .from("Follows")
-            .select("*")
-            .in("following_id", [userData.id]);
-        console.log(data);
-        console.log(count);
     };
     const follow = async () => {
         // if (followed) {
@@ -70,10 +59,10 @@ const FollowOrEdit = ({
         // router.refresh();
         try {
             // Optimistic update
-            setFollowersDataNum(
-                (prevFollowersDataNum) => prevFollowersDataNum + 1
-            );
-
+            // setFollowersDataNum(
+            //     (prevFollowersDataNum) => prevFollowersDataNum + 1
+            // );
+            setFollowers((prev) => prev + 1);
             // Perform API call
             await supabase
                 .from("Follows")
@@ -82,9 +71,10 @@ const FollowOrEdit = ({
             setFollowed(true);
         } catch (error) {
             // Revert the state back if the API call fails
-            setFollowersDataNum(
-                (prevFollowersDataNum) => prevFollowersDataNum - 1
-            );
+            // setFollowersDataNum(
+            //     (prevFollowersDataNum) => prevFollowersDataNum - 1
+            // );
+            setFollowers((prev) => prev - 1);
             console.error("Failed to follow user:", error);
         }
     };
@@ -102,10 +92,10 @@ const FollowOrEdit = ({
         // router.refresh();
         try {
             // Optimistic update
-            setFollowersDataNum(
-                (prevFollowersDataNum) => prevFollowersDataNum - 1
-            );
-
+            // setFollowersDataNum(
+            //     (prevFollowersDataNum) => prevFollowersDataNum - 1
+            // );
+            setFollowers((prev) => prev - 1);
             // Perform API call
             await supabase
                 .from("Follows")
@@ -116,24 +106,21 @@ const FollowOrEdit = ({
             setFollowed(false);
         } catch (error) {
             // Revert the state back if the API call fails
-            setFollowersDataNum(
-                (prevFollowersDataNum) => prevFollowersDataNum + 1
-            );
+            // setFollowersDataNum(
+            //     (prevFollowersDataNum) => prevFollowersDataNum + 1
+            // );
+            setFollowers((prev) => prev + 1);
             console.error("Failed to unfollow user:", error);
         }
     };
 
-    useEffect(() => {
-        if (Array.isArray(followersData)) {
-            const following = new Set(followingData);
-            setFollowersDataNum(followersData.length);
-            setFollowingNum(following.size);
-            setMineNum(mine.size);
-        }
-        if (mine.has(userData.id)) {
-            setFollowed(true);
-        }
-    }, [followersData, followingData, mine]);
+    // useEffect(() => {
+    //     console.log("1");
+    //     setFollowers(followersTotal.size);
+    //     setFollowing(followingTotal.size);
+    //     console.log(followers);
+    //     console.log(following);
+    // }, [followers, followersTotal.size, following, followingTotal.size]);
 
     return (
         <>
@@ -144,13 +131,6 @@ const FollowOrEdit = ({
                             className="bg-gray-600 mr-5 rounded-full px-5"
                             variant="ghost2"
                             onClick={editProfile}
-                        >
-                            <h1 className="text-md font-bold">Edit Profile</h1>
-                        </Button>
-                        <Button
-                            className="bg-gray-600 mr-5 rounded-full px-5"
-                            variant="ghost2"
-                            onClick={getNums}
                         >
                             <h1 className="text-md font-bold">Edit Profile</h1>
                         </Button>
@@ -174,15 +154,6 @@ const FollowOrEdit = ({
                                         Unfollow
                                     </h1>
                                 </Button>
-                                <Button
-                                    onClick={getNums}
-                                    className="bg-gray-600 mr-5 rounded-full px-5"
-                                    variant="ghost2"
-                                >
-                                    <h1 className="text-md font-bold">
-                                        Unfollow
-                                    </h1>
-                                </Button>
                             </>
                         ) : (
                             <Button
@@ -198,18 +169,14 @@ const FollowOrEdit = ({
             </div>
             <div className="p-4 relative h-full">
                 <div>{userData?.display_name}</div>
-                <div>{`@${userData?.display_name}`}</div>
+                <div>{`@${userData?.handle}`}</div>
                 <div className="w-full flex gap-5 absolute bottom-0">
-                    <div>
-                        {displayFollows ? (
-                            <div>{<div>{`${mineNum} Following`}</div>}</div>
-                        ) : (
-                            <div>
-                                {<div>{`${followingNum} Following`}</div>}
-                            </div>
-                        )}
-                    </div>
-                    <div>{<div>{`${followersDataNum!} Followers`}</div>}</div>
+                    <div>{<div>{`${following} Following`}</div>}</div>
+                    {followers === 1 ? (
+                        <div>{<div>{`${followers} Follower`}</div>}</div>
+                    ) : (
+                        <div>{<div>{`${followers} Followers`}</div>}</div>
+                    )}
                 </div>
             </div>
         </>

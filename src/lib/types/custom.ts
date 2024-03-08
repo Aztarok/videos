@@ -10,6 +10,7 @@ export interface Post {
 }
 export interface CustomUser {
     id: string;
+    handle: string | null;
     display_name: string | null;
     created_at?: any;
     image_url?: string | null;
