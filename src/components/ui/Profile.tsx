@@ -14,7 +14,6 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import authCheck from "@/app/actions";
 import { Skeleton } from "./skeleton";
 
 export default function Profile({
@@ -57,15 +56,15 @@ export default function Profile({
             router.refresh();
         }
     };
-    const handlePath = async () => {
-        console.log(pathname);
-        console.log(pathname.split("/")[1]);
-        if (protectedPaths.includes(pathname.split("/")[1])) {
-            console.log("true");
-        } else {
-            console.log("false");
-        }
-    };
+    // const handlePath = async () => {
+    //     console.log(pathname);
+    //     console.log(pathname.split("/")[1]);
+    //     if (protectedPaths.includes(pathname.split("/")[1])) {
+    //         console.log("true");
+    //     } else {
+    //         console.log("false");
+    //     }
+    // };
 
     let imageUrl;
     if (imageNew) {
@@ -107,9 +106,9 @@ export default function Profile({
                         <DropdownMenuItem onClick={handleLogout}>
                             Logout
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={handlePath}>
+                        {/* <DropdownMenuItem onClick={handlePath}>
                             Pathname
-                        </DropdownMenuItem>
+                        </DropdownMenuItem> */}
                     </DropdownMenuContent>
                 </DropdownMenu>
             )}

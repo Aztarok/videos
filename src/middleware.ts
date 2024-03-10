@@ -62,9 +62,7 @@ export async function middleware(request: NextRequest) {
     }
     if (data.session) {
         const id = data.session.user?.id;
-        if (!id) {
-            throw Error("User ID not found");
-        }
+
         const { data: user } = await supabase
             .from("profiles")
             .select("*")
@@ -98,11 +96,11 @@ export async function middleware(request: NextRequest) {
                 const { data: followers } = await supabase
                     .from("Follows")
                     .select("follower_id")
-                    .eq("following_id", userData?.id);
+                    .eq("following_id", userData.id);
                 const { data: following } = await supabase
                     .from("Follows")
                     .select("following_id")
-                    .eq("follower_id", userData?.id);
+                    .eq("follower_id", userData.id);
                 const followers2 = followers?.map((item) => item.follower_id);
                 const following2 = following?.map((item) => item.following_id);
                 requestHeaders.set("followingBruh", JSON.stringify(following2));
