@@ -71,13 +71,31 @@ const FetchMore = () => {
                 "*,images(name),profiles(display_name, handle, image_url, role)"
             )
             .range(from, to)
-            .order("created_at", { ascending: false });
+            .order("created_at", { ascending: true });
         if (!data) {
             return;
         }
         setPage(page + 1);
         const formattedPosts = data.map(createPostObject);
         setPosts((currentPosts: any) => [...currentPosts, ...formattedPosts]);
+    };
+    const getPosts2 = async () => {
+        // const { from, to } = getFromAndTo();
+        // console.log(from);
+        // console.log(to);
+        // const { data } = await supabase
+        //     .from("posts")
+        //     .select(
+        //         "*,images(name),profiles(display_name, handle, image_url, role)"
+        //     )
+        //     .range(from, to)
+        //     .order("created_at", { ascending: true });
+        // if (!data) {
+        //     return;
+        // }
+        // setPage(page + 1);
+        // const formattedPosts = data.map(createPostObject);
+        setPosts((currentPosts: any) => [...currentPosts, [1, 2, 3, 4, 5, 6]]);
     };
 
     const imageUrlHost = process.env.BUCKET_URL || "";
@@ -111,18 +129,16 @@ const FetchMore = () => {
     }, []);
     return (
         <div className="max-h-auto bg-slate-950 w-[598.67px]">
-            {posts
-                .map((post: any, index: number) => {
-                    return (
-                        <div
-                            key={index}
-                            className="border-b-[1px] border-x-[1px] p-4 border-slate-400"
-                        >
-                            {JSON.stringify(post)}
-                        </div>
-                    );
-                })
-                .reverse()}
+            {posts.map((post: any, index: number) => {
+                return (
+                    <div
+                        key={index}
+                        className="border-b-[1px] border-x-[1px] p-4 border-slate-400"
+                    >
+                        {JSON.stringify(post)}
+                    </div>
+                );
+            })}
             <div className="grid grid-cols-1 w-[60%] ml-auto mr-auto gap-10"></div>
             <Button
                 onClick={() => {
@@ -131,6 +147,14 @@ const FetchMore = () => {
                 className="w-full bg-amber-600 my-20"
             >
                 Fetch More
+            </Button>
+            <Button
+                onClick={() => {
+                    getPosts2();
+                }}
+                className="w-full bg-amber-600 my-20"
+            >
+                Test
             </Button>
         </div>
     );
