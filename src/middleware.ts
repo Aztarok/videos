@@ -54,12 +54,22 @@ export async function middleware(request: NextRequest) {
             }
         }
     );
-
+    const pathToUser = request.url.split("/");
     const { data } = await supabase.auth.getSession();
     const url = new URL(request.url);
-    if (!data.session) {
-        return response;
-    }
+    // if (!data) {
+    //     if (protectedPaths.includes(url.pathname)) {
+    //         return NextResponse.redirect(
+    //             new URL("/auth?next=" + url.pathname, request.url)
+    //         );
+    //     }
+    //     if (pathToUser.includes(url.pathname)) {
+    //         return NextResponse.redirect(
+    //             new URL("/auth?next=" + url.pathname, request.url)
+    //         );
+    //     }
+    //     return response;
+    // }
     if (data.session) {
         const id = data.session.user?.id;
 
@@ -85,7 +95,6 @@ export async function middleware(request: NextRequest) {
             requestHeaders.set("x-origin", origin);
             requestHeaders.set("x-pathname", pathname);
 
-            const pathToUser = request.url.split("/");
             if (pathToUser.includes("profile")) {
                 const userHandle = pathToUser.pop();
                 const { data: userData } = await supabase
@@ -114,7 +123,10 @@ export async function middleware(request: NextRequest) {
             });
         }
     } else {
-        if (protectedPaths.includes(url.pathname)) {
+        if (
+            protectedPaths.includes(url.pathname) ||
+            pathToUser.includes("profile")
+        ) {
             return NextResponse.redirect(
                 new URL("/auth?next=" + url.pathname, request.url)
             );

@@ -1,16 +1,11 @@
 "use client";
-import React, { ChangeEvent, useRef, useState } from "react";
-import {
-    IconBrandGithub,
-    IconBrandGoogle,
-    IconBrandOnlyfans
-} from "@tabler/icons-react";
-import { Label2 } from "./ui/label2";
-import { Input2 } from "./ui/input2";
-import { cn } from "@/lib/utils";
-import { supabaseBrowser } from "@/lib/supabase/browser";
 import { useAppContext } from "@/app/Context/store";
+import { supabaseBrowser } from "@/lib/supabase/browser";
+import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import React, { ChangeEvent, useRef, useState } from "react";
+import { Input2 } from "./ui/input2";
+import { Label2 } from "./ui/label2";
 type InputRefs = {
     input1: React.MutableRefObject<string | null>;
     input2: React.MutableRefObject<string | null>;
@@ -21,24 +16,22 @@ export function SignupFormDemo() {
         input1: useRef<string>(null),
         input2: useRef<string>(null)
     };
+    const [handleError, setHandleError] = useState<boolean>(false);
     const router = useRouter();
     const supabase = supabaseBrowser();
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const handle = inputRefs.input1.current;
         const display = inputRefs.input2.current;
-        console.log(handle, display);
-        console.log("Form submitted");
         if (handle) {
-            const { count } = await supabase
+            const { error } = await supabase
                 .from("profiles")
-                .select("handle", { count: "exact" })
-                .eq("handle", handle);
-            if (count === 0) {
-                const { error } = await supabase
-                    .from("profiles")
-                    .update({ handle: handle, display_name: display })
-                    .eq("id", state.id);
+                .update({ handle: handle, display_name: display })
+                .eq("id", state.id);
+            if (error) {
+                setHandleError(true);
+            } else {
+                setHandleError(false);
                 router.replace("/");
                 router.refresh();
             }
@@ -52,16 +45,16 @@ export function SignupFormDemo() {
         inputRefs[inputId].current = event.target.value;
     };
     return (
-        <div className="min-w-96 md:min-w-[550px] max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
+        <div className="min-w-32 md:min-w-[550px] max-w-md w-full mt-10 mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
             <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
                 Welcome to Aceternity
             </h2>
             <p className="text-neutral-600 text-md max-w-sm mt-2 dark:text-neutral-300">
                 Pick a User handle and Display name for yourself
             </p>
-            <p className="text-neutral-600 text-md max-w-sm mt-2 dark:text-neutral-300">
-                Users handles must be unique while display names can be changed
-                whenever you want
+            <p className="text-neutral-600 text-md w-full mt-2 dark:text-neutral-300">
+                Users handles must be <span className="underline">unique</span>{" "}
+                while display names can be changed whenever you want
             </p>
 
             {/* TODO: Add moving gradient maybe maybe? */}
@@ -174,7 +167,17 @@ export function SignupFormDemo() {
         </div> */}
             <form className="my-8" onSubmit={handleSubmit}>
                 <LabelInputContainer className="mb-4">
-                    <Label2 htmlFor="handle">User Handle</Label2>
+                    <div className="flex justify-between">
+                        <Label2 htmlFor="handle">User Handle</Label2>
+                        <span
+                            className={cn(
+                                "text-red-700 font-bold text-md",
+                                handleError ? "block" : "hidden"
+                            )}
+                        >
+                            Handle is already taken
+                        </span>
+                    </div>
                     <Input2
                         id="handle"
                         placeholder="deeznuts123"

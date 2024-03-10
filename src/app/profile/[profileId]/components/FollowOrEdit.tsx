@@ -1,12 +1,10 @@
 "use client";
 import { useAppContext } from "@/app/Context/store";
 
-import useFollowers from "@/app/hook/getFollowers";
-import useFollowing from "@/app/hook/getFollowing";
 import { Button } from "@/components/ui/button";
 import { supabaseBrowser } from "@/lib/supabase/browser";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { HiMiniEllipsisHorizontal } from "react-icons/hi2";
 interface FollowData {
     follower_id: string;
@@ -32,11 +30,11 @@ const FollowOrEdit = ({
         edit = true;
     }
     const [followed, setFollowed] = useState(false);
-    const [followers, setFollowers] = useState<number>(followersTotal.size);
-    const [following] = useState<number>(followingTotal.size);
+    const [followers, setFollowers] = useState<number>(followersTotal?.size);
+    const [following] = useState<number>(followingTotal?.size);
 
     let displayFollows = false;
-    if (state?.id === userData.id) {
+    if (state?.id === userData?.id) {
         displayFollows = true;
     }
 

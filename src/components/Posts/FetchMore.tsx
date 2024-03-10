@@ -2,22 +2,25 @@
 import { supabaseBrowser } from "@/lib/supabase/browser";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
+import { toast } from "sonner";
 
 const FetchMore = () => {
     const supabase = supabaseBrowser();
     const [posts, setPosts] = useState<any>([]);
     const [page, setPage] = useState<number>(0);
+    const [turnOff, setTurnOff] = useState<boolean>(false);
     const [user, setUser] = useState<any>(async () => {
         return await supabase.auth.getUser();
     });
     const getFromAndTo = () => {
-        const ITEMS_PER_PAGE = 1;
+        const ITEMS_PER_PAGE = 2;
         let from = page * ITEMS_PER_PAGE;
         let to = from + ITEMS_PER_PAGE;
 
-        if (page > 0) {
-            from += 1;
-        }
+        // if (page > 0) {
+        //     from += 1;
+        // }
+        to -= 1;
 
         return { from, to };
     };
@@ -35,8 +38,6 @@ const FetchMore = () => {
 
     // const getPosts = async () => {
     //     const { from, to } = getFromAndTo(page, 1);
-    //     console.log(from);
-    //     console.log(to);
     //     const { data } = await supabase
     //         .from("posts")
     //         .select(
@@ -56,15 +57,16 @@ const FetchMore = () => {
     //         //     const { name } = imageObject;
     //         //     images.push(`${post.post_by}/${post.id}/${name}`);
     //         // }
-    //         console.log(post);
     //         const newPost = createPostObject(post);
     //         setPosts((currentData: any) => [...currentData, { ...newPost }]);
     //     }
     // };
     const getPosts = async () => {
+        if (turnOff) {
+            toast.error("Can't load more posts");
+            return;
+        }
         const { from, to } = getFromAndTo();
-        console.log(from);
-        console.log(to);
         const { data } = await supabase
             .from("posts")
             .select(
@@ -72,17 +74,22 @@ const FetchMore = () => {
             )
             .range(from, to)
             .order("created_at", { ascending: true });
+        console.log(data);
         if (!data) {
+            toast.error("Failed to get posts");
             return;
         }
+        if (data.length === 0) {
+            toast.error("Failed to get more posts");
+            setTurnOff(true);
+        }
         setPage(page + 1);
+
         const formattedPosts = data.map(createPostObject);
         setPosts((currentPosts: any) => [...currentPosts, ...formattedPosts]);
     };
     const getPosts2 = async () => {
         // const { from, to } = getFromAndTo();
-        // console.log(from);
-        // console.log(to);
         // const { data } = await supabase
         //     .from("posts")
         //     .select(
@@ -103,11 +110,9 @@ const FetchMore = () => {
         let images: any[] = [];
         for (let j = 0; j < post?.images?.length; j++) {
             const imageObject = post.images[j];
-            console.log(imageObject);
             const { name } = imageObject;
             images.push(`${post.post_by}/${post.id}/${imageObject.name}`);
         }
-        console.log(images);
         return {
             id: post.id,
             created_at: post.created_at,
@@ -126,6 +131,7 @@ const FetchMore = () => {
 
     useEffect(() => {
         getPosts();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
         <div className="max-h-auto bg-slate-950 w-[598.67px]">

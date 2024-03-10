@@ -64,6 +64,7 @@ export default function PostsMaker() {
                 uppyInstance.close();
             };
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [session]);
     if (!session || !uppy || !state) {
         return null;

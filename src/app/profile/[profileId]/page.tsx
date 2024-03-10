@@ -12,6 +12,9 @@ const Page = async () => {
     const origin_url = headersList.get("x-origin");
     const followme = headersList.get("followingBruh");
     const followsyou = headersList.get("followersBruh");
+    if (!followme || !followsyou) {
+        throw Error;
+    }
     const followme2 = new Set(JSON.parse(followme!));
     const followsyou2 = new Set(JSON.parse(followsyou!));
 

@@ -5,7 +5,7 @@ import React from "react";
 const Page = () => {
     return (
         <div className="w-full flex justify-center h-screen relative">
-            <div className="absolute bottom-1/2">
+            <div className="absolute sm:bottom-1/2 ">
                 <SignupFormDemo />
             </div>
         </div>
