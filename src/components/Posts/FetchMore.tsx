@@ -1,11 +1,14 @@
 'use client';
 import { supabaseBrowser } from '@/lib/supabase/browser';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Button } from '../ui/button';
 import { toast } from 'sonner';
 import PostClient from './PostClient';
 import increaseData from '@/app/actions/increaseData';
 import { useAppContext } from '@/app/Context/store';
+import { useRouter } from 'next/navigation';
+
+let debounce = require('lodash.debounce');
 
 export function createPostObject(post: any) {
 	let images: any[] = [];
@@ -27,15 +30,19 @@ export function createPostObject(post: any) {
 	};
 }
 const FetchMore = () => {
+	const router = useRouter();
+	const wasAlreadyReqested = useRef(false);
 	const supabase = supabaseBrowser();
 	const { posts, setPosts } = useAppContext();
 	const [page, setPage] = useState<number>(0);
+	const scrollPercentage = useRef<number>(0);
+	const [fetching, setFetching] = useState(false);
 	const [turnOff, setTurnOff] = useState<boolean>(false);
 	const [user, setUser] = useState<any>(async () => {
 		return await supabase.auth.getUser();
 	});
 	const getFromAndTo = () => {
-		const ITEMS_PER_PAGE = 2;
+		const ITEMS_PER_PAGE = 3;
 		let from = page * ITEMS_PER_PAGE;
 		let to = from + ITEMS_PER_PAGE;
 
@@ -68,6 +75,9 @@ const FetchMore = () => {
 
 		const formattedPosts = data.map(createPostObject);
 		setPosts((currentPosts: any) => [...currentPosts, ...formattedPosts]);
+		setFetching(false);
+
+		router.refresh();
 	};
 
 	const imageUrlHost =
@@ -78,15 +88,56 @@ const FetchMore = () => {
 	let imagePrio = false;
 
 	useEffect(() => {
-		getPosts();
+		if (!wasAlreadyReqested.current) {
+			getPosts();
+		}
+		wasAlreadyReqested.current = true;
 
+		const handleScroll = debounce(() => {
+			const scrollTop =
+				window.scrollY !== undefined
+					? window.scrollY
+					: (
+							document.documentElement ||
+							document.body.parentNode ||
+							document.body
+					  ).scrollTop;
+			const scrollHeight =
+				document.documentElement.scrollHeight ||
+				document.body.scrollHeight;
+			const clientHeight =
+				document.documentElement.clientHeight ||
+				document.body.clientHeight;
+			const newScrollPercentage =
+				(scrollTop / (scrollHeight - clientHeight)) * 100;
+			scrollPercentage.current = newScrollPercentage;
+
+			// Fetch more posts when scroll reaches 98%
+			if (
+				scrollPercentage.current.valueOf() > 98 &&
+				!fetching &&
+				!turnOff
+			) {
+				setFetching(true);
+				document.getElementById('fetch')?.click();
+			}
+		}, 1000);
+		const handleResize = () => {
+			handleScroll();
+		};
+		window.addEventListener('scroll', handleScroll);
+		window.addEventListener('resize', handleResize);
+
+		// Initial update of the scroll percentage
+		handleScroll();
+		handleResize();
+
+		return () => {
+			window.removeEventListener('scroll', handleScroll);
+		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [wasAlreadyReqested, fetching, scrollPercentage]);
 
-	const handleClick = async () => {
-		const data = await increaseData(0, 1);
-		console.log(data);
-	};
 	return (
 		<div className="max-h-auto bg-slate-950 w-[598.67px]">
 			{posts.map((post: any, index: number) => {
@@ -109,12 +160,10 @@ const FetchMore = () => {
 				onClick={() => {
 					getPosts();
 				}}
-				className="w-full bg-amber-600 my-20"
+				className="w-full bg-amber-600 my-5 hidden"
+				id="fetch"
 			>
 				Fetch More
-			</Button>
-			<Button onClick={handleClick} className="w-full bg-amber-600 my-20">
-				Test
 			</Button>
 		</div>
 	);
