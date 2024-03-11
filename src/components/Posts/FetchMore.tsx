@@ -1,176 +1,123 @@
-"use client";
-import { supabaseBrowser } from "@/lib/supabase/browser";
-import { useEffect, useState } from "react";
-import { Button } from "../ui/button";
-import { toast } from "sonner";
-import PostClient from "./PostClient";
+'use client';
+import { supabaseBrowser } from '@/lib/supabase/browser';
+import { useEffect, useState } from 'react';
+import { Button } from '../ui/button';
+import { toast } from 'sonner';
+import PostClient from './PostClient';
+import increaseData from '@/app/actions/increaseData';
+import { useAppContext } from '@/app/Context/store';
 
+export function createPostObject(post: any) {
+	let images: any[] = [];
+	for (let j = 0; j < post?.images?.length; j++) {
+		const imageObject = post.images[j];
+		const { name } = imageObject;
+		images.push(`${post.post_by}/${post.id}/${imageObject.name}`);
+	}
+	return {
+		id: post.id,
+		created_at: post.created_at,
+		images,
+		description: post.description,
+		post_by: post.post_by,
+		display_name: post.profiles?.display_name,
+		handle: post.profiles?.handle,
+		image_user: post.profiles?.image_url,
+		role: post.profiles?.role,
+	};
+}
 const FetchMore = () => {
-    const supabase = supabaseBrowser();
-    const [posts, setPosts] = useState<any>([]);
-    const [page, setPage] = useState<number>(0);
-    const [turnOff, setTurnOff] = useState<boolean>(false);
-    const [user, setUser] = useState<any>(async () => {
-        return await supabase.auth.getUser();
-    });
-    const getFromAndTo = () => {
-        const ITEMS_PER_PAGE = 2;
-        let from = page * ITEMS_PER_PAGE;
-        let to = from + ITEMS_PER_PAGE;
+	const supabase = supabaseBrowser();
+	const { posts, setPosts } = useAppContext();
+	const [page, setPage] = useState<number>(0);
+	const [turnOff, setTurnOff] = useState<boolean>(false);
+	const [user, setUser] = useState<any>(async () => {
+		return await supabase.auth.getUser();
+	});
+	const getFromAndTo = () => {
+		const ITEMS_PER_PAGE = 2;
+		let from = page * ITEMS_PER_PAGE;
+		let to = from + ITEMS_PER_PAGE;
 
-        // if (page > 0) {
-        //     from += 1;
-        // }
-        to -= 1;
+		// if (page > 0) {
+		//     from += 1;
+		// }
+		to -= 1;
 
-        return { from, to };
-    };
+		return { from, to };
+	};
 
-    // function getFromAndTo(page: number, limit: number) {
-    //     page = Math.max(page, 1);
-    //     limit = Math.max(limit, 1);
-    //     page = page - 1;
+	const getPosts = async () => {
+		if (turnOff) {
+			toast.error("Can't load more posts, you have reached the end");
+			return;
+		}
 
-    //     const from = page * limit;
-    //     const to = from + limit - 1;
+		const { from, to } = getFromAndTo();
+		const data = await increaseData(from, to);
 
-    //     return { from, to };
-    // }
+		if (!data) {
+			toast.error('Failed to get posts');
+			return;
+		}
+		if (data.length === 0) {
+			toast.error('Failed to get more posts');
+			setTurnOff(true);
+		}
+		setPage(page + 1);
 
-    // const getPosts = async () => {
-    //     const { from, to } = getFromAndTo(page, 1);
-    //     const { data } = await supabase
-    //         .from("posts")
-    //         .select(
-    //             "*,images(name),profiles(display_name, handle, image_url, role)"
-    //         )
-    //         .range(from, to)
-    //         .order("created_at", { ascending: false });
-    //     if (!data) {
-    //         return;
-    //     }
-    //     setPage(page + 1);
-    //     for (let i = 0; i < data.length; i++) {
-    //         const post = posts[i];
-    //         let images: any[] = [];
-    //         // for (let j = 0; j < post.images.length; j++) {
-    //         //     const imageObject = post.images[j];
-    //         //     const { name } = imageObject;
-    //         //     images.push(`${post.post_by}/${post.id}/${name}`);
-    //         // }
-    //         const newPost = createPostObject(post);
-    //         setPosts((currentData: any) => [...currentData, { ...newPost }]);
-    //     }
-    // };
-    const getPosts = async () => {
-        if (turnOff) {
-            toast.error("Can't load more posts, you have reached the end");
-            return;
-        }
-        const { from, to } = getFromAndTo();
-        const { data } = await supabase
-            .from("posts")
-            .select(
-                "*,images(name),profiles(display_name, handle, image_url, role)"
-            )
-            .range(from, to)
-            .order("created_at", { ascending: false });
-        console.log(data);
-        if (!data) {
-            toast.error("Failed to get posts");
-            return;
-        }
-        if (data.length === 0) {
-            toast.error("Failed to get more posts");
-            setTurnOff(true);
-        }
-        setPage(page + 1);
+		const formattedPosts = data.map(createPostObject);
+		setPosts((currentPosts: any) => [...currentPosts, ...formattedPosts]);
+	};
 
-        const formattedPosts = data.map(createPostObject);
-        setPosts((currentPosts: any) => [...currentPosts, ...formattedPosts]);
-    };
-    const getPosts2 = async () => {
-        // const { from, to } = getFromAndTo();
-        // const { data } = await supabase
-        //     .from("posts")
-        //     .select(
-        //         "*,images(name),profiles(display_name, handle, image_url, role)"
-        //     )
-        //     .range(from, to)
-        //     .order("created_at", { ascending: true });
-        // if (!data) {
-        //     return;
-        // }
-        // setPage(page + 1);
-        // const formattedPosts = data.map(createPostObject);
-        setPosts((currentPosts: any) => [...currentPosts, [1, 2, 3, 4, 5, 6]]);
-    };
+	const imageUrlHost =
+		'https://umxjgngsvuacvscuazli.supabase.co/storage/v1/object/public/postImages/';
 
-    const imageUrlHost =
-        "https://umxjgngsvuacvscuazli.supabase.co/storage/v1/object/public/postImages/";
-    function createPostObject(post: any) {
-        let images: any[] = [];
-        for (let j = 0; j < post?.images?.length; j++) {
-            const imageObject = post.images[j];
-            const { name } = imageObject;
-            images.push(`${post.post_by}/${post.id}/${imageObject.name}`);
-        }
-        return {
-            id: post.id,
-            created_at: post.created_at,
-            images,
-            description: post.description,
-            post_by: post.post_by,
-            display_name: post.profiles?.display_name,
-            handle: post.profiles?.handle,
-            image_user: post.profiles?.image_url,
-            role: post.profiles?.role
-        };
-    }
-    let currentPost: number = 0;
-    const re = /(?:\.([^.]+))?$/;
-    let imagePrio = false;
+	let currentPost: number = 0;
+	const re = /(?:\.([^.]+))?$/;
+	let imagePrio = false;
 
-    useEffect(() => {
-        getPosts();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-    return (
-        <div className="max-h-auto bg-slate-950 w-[598.67px]">
-            {posts.map((post: any, index: number) => {
-                currentPost++;
-                return (
-                    <div
-                        key={index}
-                        className="border-b-[1px] border-x-[1px] p-4 border-slate-400"
-                    >
-                        <PostClient
-                            post={post}
-                            imageUrlHost={imageUrlHost}
-                            currentPost={currentPost}
-                        />
-                    </div>
-                );
-            })}
-            <div className="grid grid-cols-1 w-[60%] ml-auto mr-auto gap-10"></div>
-            <Button
-                onClick={() => {
-                    getPosts();
-                }}
-                className="w-full bg-amber-600 my-20"
-            >
-                Fetch More
-            </Button>
-            <Button
-                onClick={() => {
-                    getPosts2();
-                }}
-                className="w-full bg-amber-600 my-20"
-            >
-                Test
-            </Button>
-        </div>
-    );
+	useEffect(() => {
+		getPosts();
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	const handleClick = async () => {
+		const data = await increaseData(0, 1);
+		console.log(data);
+	};
+	return (
+		<div className="max-h-auto bg-slate-950 w-[598.67px]">
+			{posts.map((post: any, index: number) => {
+				currentPost++;
+				return (
+					<div
+						key={index}
+						className="border-b-[1px] border-x-[1px] p-4 border-slate-400"
+					>
+						<PostClient
+							post={post}
+							imageUrlHost={imageUrlHost}
+							currentPost={currentPost}
+						/>
+					</div>
+				);
+			})}
+			<div className="grid grid-cols-1 w-[60%] ml-auto mr-auto gap-10"></div>
+			<Button
+				onClick={() => {
+					getPosts();
+				}}
+				className="w-full bg-amber-600 my-20"
+			>
+				Fetch More
+			</Button>
+			<Button onClick={handleClick} className="w-full bg-amber-600 my-20">
+				Test
+			</Button>
+		</div>
+	);
 };
 
 export default FetchMore;
