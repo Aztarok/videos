@@ -1,28 +1,27 @@
-import { supabaseServer } from "@/lib/supabase/server";
-
+"use client";
+import { useAppContext } from "@/app/Context/store";
 import UserProfileButton from "./UserProfileButton";
 
-export default async function UserProfile({
+export default function UserProfile({
     fade = false,
     imageNew,
-    user_id
+    display_name,
+    handle
 }: {
     fade?: boolean;
     imageNew?: string;
-    user_id: string;
+    display_name: string;
+    handle?: string;
 }) {
-    const supabase = supabaseServer();
-    const { data } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", user_id)
-        .single();
-
-    const imageUrl = data?.image_url;
-
+    const { state } = useAppContext();
+    const dataObj = {
+        display_name: handle,
+        handle: handle,
+        image_url: imageNew
+    };
     return (
         <div>
-            {data?.id ? <UserProfileButton data={data} fade={fade} /> : ""}
+            {state?.id ? <UserProfileButton data={dataObj} fade={fade} /> : ""}
         </div>
     );
 }

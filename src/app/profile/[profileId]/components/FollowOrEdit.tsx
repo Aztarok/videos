@@ -4,7 +4,7 @@ import { useAppContext } from "@/app/Context/store";
 import { Button } from "@/components/ui/button";
 import { supabaseBrowser } from "@/lib/supabase/browser";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HiMiniEllipsisHorizontal } from "react-icons/hi2";
 interface FollowData {
     follower_id: string;
@@ -26,7 +26,7 @@ const FollowOrEdit = ({
     const { state } = useAppContext();
     const supabase = supabaseBrowser();
     let edit = false;
-    if (userCheck === state?.display_name) {
+    if (userCheck === state?.handle) {
         edit = true;
     }
     const [followed, setFollowed] = useState(false);
@@ -111,6 +111,12 @@ const FollowOrEdit = ({
             console.error("Failed to unfollow user:", error);
         }
     };
+
+    useEffect(() => {
+        if (followersTotal.has(state?.id)) {
+            setFollowed(true);
+        }
+    }, [followersTotal, state?.id]);
 
     // useEffect(() => {
     //     console.log("1");

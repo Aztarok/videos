@@ -13,7 +13,7 @@ const Page = async () => {
     const followme = headersList.get("followingBruh");
     const followsyou = headersList.get("followersBruh");
     if (!followme || !followsyou) {
-        throw Error;
+        throw Error("Headers not found, try refreshing the page");
     }
     const followme2 = new Set(JSON.parse(followme!));
     const followsyou2 = new Set(JSON.parse(followsyou!));

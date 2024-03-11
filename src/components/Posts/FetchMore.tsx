@@ -3,6 +3,7 @@ import { supabaseBrowser } from "@/lib/supabase/browser";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
+import PostClient from "./PostClient";
 
 const FetchMore = () => {
     const supabase = supabaseBrowser();
@@ -63,7 +64,7 @@ const FetchMore = () => {
     // };
     const getPosts = async () => {
         if (turnOff) {
-            toast.error("Can't load more posts");
+            toast.error("Can't load more posts, you have reached the end");
             return;
         }
         const { from, to } = getFromAndTo();
@@ -73,7 +74,7 @@ const FetchMore = () => {
                 "*,images(name),profiles(display_name, handle, image_url, role)"
             )
             .range(from, to)
-            .order("created_at", { ascending: true });
+            .order("created_at", { ascending: false });
         console.log(data);
         if (!data) {
             toast.error("Failed to get posts");
@@ -105,7 +106,8 @@ const FetchMore = () => {
         setPosts((currentPosts: any) => [...currentPosts, [1, 2, 3, 4, 5, 6]]);
     };
 
-    const imageUrlHost = process.env.BUCKET_URL || "";
+    const imageUrlHost =
+        "https://umxjgngsvuacvscuazli.supabase.co/storage/v1/object/public/postImages/";
     function createPostObject(post: any) {
         let images: any[] = [];
         for (let j = 0; j < post?.images?.length; j++) {
@@ -136,12 +138,17 @@ const FetchMore = () => {
     return (
         <div className="max-h-auto bg-slate-950 w-[598.67px]">
             {posts.map((post: any, index: number) => {
+                currentPost++;
                 return (
                     <div
                         key={index}
                         className="border-b-[1px] border-x-[1px] p-4 border-slate-400"
                     >
-                        {JSON.stringify(post)}
+                        <PostClient
+                            post={post}
+                            imageUrlHost={imageUrlHost}
+                            currentPost={currentPost}
+                        />
                     </div>
                 );
             })}

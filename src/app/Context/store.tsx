@@ -32,7 +32,7 @@ export async function getAuthed() {
             .select("*")
             .eq("id", data.session.user.id)
             .single();
-
+        console.log(user);
         return { user, session: data };
     }
     return { user: initUser, session: null };
