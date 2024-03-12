@@ -41,6 +41,7 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
 	let [state, setState] = useState<any | undefined>(undefined);
 	let [posts, setPosts] = useState<any>([]);
 	let [session, setSession] = useState<any>(null);
+	let [tabDisplay, setTabDisplay] = useState<string>('For you');
 	useEffect(() => {
 		getAuthed()
 			.then(({ user, session }) => {
@@ -60,6 +61,8 @@ export function AppWrapper({ children }: { children: React.ReactNode }) {
 				setSession,
 				posts,
 				setPosts,
+				tabDisplay,
+				setTabDisplay,
 			}}
 		>
 			{children}

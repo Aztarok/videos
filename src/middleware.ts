@@ -98,8 +98,8 @@ export async function middleware(request: NextRequest) {
 			requestHeaders.set('x-origin', origin);
 			requestHeaders.set('x-pathname', pathname);
 
-			if (pathToUser.includes('profile')) {
-				const userHandle = pathToUser.pop();
+			if (true) {
+				const userHandle = user.handle;
 				const { data: userData } = await supabase
 					.from('profiles')
 					.select('*,posts(*)')
@@ -107,16 +107,16 @@ export async function middleware(request: NextRequest) {
 					.single();
 				const { data: followers } = await supabase
 					.from('Follows')
-					.select('follower_id')
+					.select('*')
 					.eq('following_id', userData?.id);
 				const { data: following } = await supabase
 					.from('Follows')
-					.select('following_id')
+					.select('*')
 					.eq('follower_id', userData?.id);
-				const followers2 = followers?.map((item) => item.follower_id);
-				const following2 = following?.map((item) => item.following_id);
-				requestHeaders.set('followingBruh', JSON.stringify(following2));
-				requestHeaders.set('followersBruh', JSON.stringify(followers2));
+				// const followers2 = followers?.map((item) => item.follower_id);
+				// const following2 = following?.map((item) => item);
+				requestHeaders.set('followingBruh', JSON.stringify(following));
+				requestHeaders.set('followersBruh', JSON.stringify(followers));
 			}
 
 			return NextResponse.next({

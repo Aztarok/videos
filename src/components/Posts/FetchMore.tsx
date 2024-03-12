@@ -29,11 +29,11 @@ export function createPostObject(post: any) {
 		role: post.profiles?.role,
 	};
 }
-const FetchMore = () => {
+const FetchMore = ({ FollowingList }: { FollowingList?: any }) => {
 	const router = useRouter();
 	const wasAlreadyReqested = useRef(false);
 	const supabase = supabaseBrowser();
-	const { posts, setPosts } = useAppContext();
+	const { posts, setPosts, tabDisplay } = useAppContext();
 	const [page, setPage] = useState<number>(0);
 	const scrollPercentage = useRef<number>(0);
 	const [fetching, setFetching] = useState(false);
@@ -138,6 +138,38 @@ const FetchMore = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [wasAlreadyReqested, fetching, scrollPercentage]);
 
+	const runFollowing = async () => {
+		let idsForFollowing = FollowingList?.map(
+			(item: any) => item.following_id
+		);
+		const { data } = await supabase
+			.from('posts')
+			.select(
+				'*,images(name),profiles(display_name, handle, image_url, role)'
+			)
+			.in('post_by', idsForFollowing)
+			.order('created_at', { ascending: false });
+		if (!data) {
+			toast.error('Failed to get posts');
+			return;
+		}
+		const formattedPosts = data.map(createPostObject);
+		setPosts((currentPosts: any) => [...currentPosts, ...formattedPosts]);
+		setFetching(false);
+	};
+
+	useEffect(() => {
+		if (tabDisplay === 'Following') {
+			setPosts([]);
+			runFollowing();
+			setFetching(true);
+		}
+	}, [tabDisplay]);
+
+	const getTest = async () => {
+		console.log('hi');
+		console.log(tabDisplay);
+	};
 	return (
 		<div className="max-h-auto bg-slate-950 w-[598.67px]">
 			{posts.map((post: any, index: number) => {
@@ -162,6 +194,14 @@ const FetchMore = () => {
 				}}
 				className="w-full bg-amber-600 my-5 hidden"
 				id="fetch"
+			>
+				Fetch More
+			</Button>
+			<Button
+				onClick={() => {
+					getTest();
+				}}
+				className="w-full bg-amber-600 my-5"
 			>
 				Fetch More
 			</Button>
