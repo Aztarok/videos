@@ -124,14 +124,6 @@ const FollowOrEdit = ({
 		}
 	}, [followersTotal, state?.id]);
 
-	// useEffect(() => {
-	//     console.log("1");
-	//     setFollowers(followersTotal.size);
-	//     setFollowing(followingTotal.size);
-	//     console.log(followers);
-	//     console.log(following);
-	// }, [followers, followersTotal.size, following, followingTotal.size]);
-
 	return (
 		<>
 			<div className="w-full h-[68px] flex justify-end gap-2 pt-2">

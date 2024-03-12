@@ -42,7 +42,7 @@ const FetchMore = ({ FollowingList }: { FollowingList?: any }) => {
 		return await supabase.auth.getUser();
 	});
 	const getFromAndTo = () => {
-		const ITEMS_PER_PAGE = 3;
+		const ITEMS_PER_PAGE = 20;
 		let from = page * ITEMS_PER_PAGE;
 		let to = from + ITEMS_PER_PAGE;
 
@@ -134,6 +134,7 @@ const FetchMore = ({ FollowingList }: { FollowingList?: any }) => {
 
 		return () => {
 			window.removeEventListener('scroll', handleScroll);
+			window.removeEventListener('resize', handleResize);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [wasAlreadyReqested, fetching, scrollPercentage]);
@@ -164,6 +165,7 @@ const FetchMore = ({ FollowingList }: { FollowingList?: any }) => {
 			runFollowing();
 			setFetching(true);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [tabDisplay]);
 
 	const getTest = async () => {

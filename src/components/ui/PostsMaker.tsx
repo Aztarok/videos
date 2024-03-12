@@ -40,6 +40,20 @@ export default function PostsMaker() {
 		);
 	};
 
+	const appendPost = async () => {
+		const data = await postHelper();
+
+		document.getElementById('trigger-close')?.click();
+
+		if (data?.length === 0) {
+			return null;
+		}
+		const formattedPost: any = data?.map(createPostObject);
+		setPosts((currentPosts: any) => [...formattedPost, ...currentPosts]);
+		router.refresh();
+		toast.success('You made a post!');
+	};
+
 	useEffect(() => {
 		if (session) {
 			const uppyInstance = new Uppy({
@@ -95,6 +109,9 @@ export default function PostsMaker() {
 		router.refresh();
 	});
 	const handleUpload = async () => {
+		if (!uppy) {
+			throw Error;
+		}
 		const randomUUID = crypto.randomUUID();
 		if (uppy.getFiles().length !== 0) {
 			for (let i = 0; i < uppy.getFiles().length; i++) {
@@ -117,28 +134,14 @@ export default function PostsMaker() {
 				.from('posts')
 				.update({ description: postContent })
 				.eq('id', randomUUID);
-			document.getElementById('trigger-close')?.click();
-			router.refresh();
-			toast.success('You made a post!');
+			appendPost();
 		} else if (uppy.getFiles().length === 0 && postContent) {
 			await supabase.from('posts').insert({
 				id: randomUUID,
 				description: postContent,
 				post_by: state?.id!,
 			});
-			document.getElementById('trigger-close')?.click();
-			const data = await postHelper();
-			if (data?.length === 0) {
-				return null;
-			}
-			const formattedPost: any = data?.map(createPostObject);
-			setPosts((currentPosts: any) => [
-				...formattedPost,
-				...currentPosts,
-			]);
-
-			router.refresh();
-			toast.success('You made a post!');
+			appendPost();
 		} else {
 			toast.warning('Please add content to the post');
 		}
