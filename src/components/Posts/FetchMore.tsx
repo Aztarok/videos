@@ -162,7 +162,13 @@ const FetchMore = ({ FollowingList }: { FollowingList?: any }) => {
 	useEffect(() => {
 		if (tabDisplay === 'Following') {
 			setPosts([]);
+			setPage(0);
 			runFollowing();
+			setFetching(true);
+		}
+		if (tabDisplay === 'For you') {
+			setPosts([]);
+			getPosts();
 			setFetching(true);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -179,7 +185,7 @@ const FetchMore = ({ FollowingList }: { FollowingList?: any }) => {
 				return (
 					<div
 						key={index}
-						className="border-b-[1px] border-x-[1px] p-4 border-slate-400"
+						className="border-b-[1px] border-x-[1px] border-slate-400"
 					>
 						<PostClient
 							post={post}

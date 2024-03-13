@@ -31,7 +31,7 @@ export default function PostsMaker() {
 	const fileUploadPath: string =
 		process.env.NEXT_PUBLIC_SUPABASE_URL + '/storage/v1/upload/resumable';
 	const [postContent, setPostContent] = useState<string>();
-	const { state, session, posts, setPosts } = useAppContext();
+	const { state, session, setPosts } = useAppContext();
 	const [uppy, setUppy] = useState<Uppy>();
 	const onBeforeRequest = async (req: any) => {
 		req.setHeader(
