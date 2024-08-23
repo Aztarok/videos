@@ -37,11 +37,9 @@ export default function RootLayout({
                         >
                             <AppWrapper>
                                 {requestUrl !==
-                                    (process.env.LOCAL_PROFILE_URL ||
-                                        process.env.PRODUCTION_PROFILE_URL) &&
+                                    "https://videos-gqajuwcz1-aztaroks-projects.vercel.app/profile" &&
                                 requestUrl !==
-                                    (process.env.LOCAL_SOMEPAGE_URL ||
-                                        process.env.PRODUCTION_SOMEPAGE_URL) &&
+                                    "https://videos-gqajuwcz1-aztaroks-projects.vercel.app/somepage" &&
                                 requestUrl !== null ? (
                                     <Navbar />
                                 ) : null}
