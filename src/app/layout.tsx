@@ -23,6 +23,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     const requestUrl = headers().get("x-url");
+    console.log(requestUrl);
     return (
         <>
             <html lang="en" suppressHydrationWarning>
@@ -40,9 +41,9 @@ export default function RootLayout({
                                     "https://videos-gqajuwcz1-aztaroks-projects.vercel.app/profile" &&
                                 requestUrl !==
                                     "https://videos-gqajuwcz1-aztaroks-projects.vercel.app/somepage" &&
-                                requestUrl !== null ? (
+                                requestUrl == null ? null : (
                                     <Navbar />
-                                ) : null}
+                                )}
                                 {children}
                                 <Suspense>
                                     <PostsMaker />
