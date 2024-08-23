@@ -22,8 +22,6 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const requestUrl = headers().get("x-url");
-    console.log(requestUrl);
     return (
         <>
             <html lang="en" suppressHydrationWarning>
@@ -37,13 +35,7 @@ export default function RootLayout({
                             disableTransitionOnChange
                         >
                             <AppWrapper>
-                                {requestUrl !==
-                                    "https://videos-gqajuwcz1-aztaroks-projects.vercel.app/profile" &&
-                                requestUrl !==
-                                    "https://videos-gqajuwcz1-aztaroks-projects.vercel.app/somepage" &&
-                                requestUrl == null ? null : (
-                                    <Navbar />
-                                )}
+                                <Navbar />
                                 {children}
                                 <Suspense>
                                     <PostsMaker />
