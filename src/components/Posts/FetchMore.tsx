@@ -1,12 +1,13 @@
 "use client";
 import increaseData from "@/app/actions/increaseData";
-import { useAppContext } from "@/app/Context/store";
 import { supabaseBrowser } from "@/lib/supabase/browser";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import PostClient from "./PostClient";
+import { usePostsStore } from "@/app/Context/postStore";
+import { useAppContext } from "@/app/Context/store";
 
 let debounce = require("lodash.debounce");
 
@@ -29,25 +30,23 @@ export function createPostObject(post: any) {
         role: post.profiles?.role
     };
 }
+
 const FetchMore = ({ FollowingList }: { FollowingList?: any }) => {
+    const postsArray = usePostsStore((state) => state.posts);
+    const setPostsArray = usePostsStore((state) => state.setPosts);
     const router = useRouter();
-    const wasAlreadyReqested = useRef(false);
     const supabase = supabaseBrowser();
-    const { posts, setPosts, tabDisplay } = useAppContext();
     const [page, setPage] = useState<number>(0);
     const scrollPercentage = useRef<number>(0);
     const [fetching, setFetching] = useState(false);
     const [turnOff, setTurnOff] = useState<boolean>(false);
+    const { tabDisplay } = useAppContext();
+
     const getFromAndTo = () => {
         const ITEMS_PER_PAGE = 5;
         let from = page * ITEMS_PER_PAGE;
         let to = from + ITEMS_PER_PAGE;
-
-        // if (page > 0) {
-        //     from += 1;
-        // }
         to -= 1;
-
         return { from, to };
     };
 
@@ -59,7 +58,6 @@ const FetchMore = ({ FollowingList }: { FollowingList?: any }) => {
 
         const { from, to } = getFromAndTo();
         const data = await increaseData(from, to);
-
         if (!data) {
             toast.error("Failed to get posts");
             return;
@@ -67,101 +65,19 @@ const FetchMore = ({ FollowingList }: { FollowingList?: any }) => {
         if (data.length === 0) {
             toast.error("Failed to get more posts");
             setTurnOff(true);
+            return;
         }
         setPage(page + 1);
 
         const formattedPosts = data.map(createPostObject);
-        setPosts((currentPosts: any) => [...currentPosts, ...formattedPosts]);
+        setPostsArray(formattedPosts);
         setFetching(false);
-
-        router.refresh();
     };
-
-    const imageUrlHost =
-        "https://umxjgngsvuacvscuazli.supabase.co/storage/v1/object/public/postImages/";
-
-    let currentPost: number = 0;
-    const re = /(?:\.([^.]+))?$/;
-    let imagePrio = false;
-
-    const handleScroll = debounce(() => {
-        const scrollTop =
-            window.scrollY !== undefined
-                ? window.scrollY
-                : (
-                      document.documentElement ||
-                      document.body.parentNode ||
-                      document.body
-                  ).scrollTop;
-        const scrollHeight =
-            document.documentElement.scrollHeight || document.body.scrollHeight;
-        const clientHeight =
-            document.documentElement.clientHeight || document.body.clientHeight;
-        const newScrollPercentage =
-            (scrollTop / (scrollHeight - clientHeight)) * 100;
-        scrollPercentage.current = newScrollPercentage;
-
-        // Fetch more posts when scroll reaches 98%
-        if (
-            scrollPercentage.current.valueOf() > 98 &&
-            !fetching &&
-            !turnOff &&
-            tabDisplay === "For you"
-        ) {
-            setFetching(true);
-            document.getElementById("fetch")?.click();
-        }
-        if (
-            scrollPercentage.current.valueOf() > 98 &&
-            !fetching &&
-            !turnOff &&
-            tabDisplay === "Following"
-        ) {
-            setFetching(true);
-            runFollowing();
-        }
-    }, 1000);
-    const handleResize = () => {
-        handleScroll();
-    };
-
-    useEffect(() => {
-        console.log("hi");
-
-        window.addEventListener("scroll", handleScroll);
-        window.addEventListener("resize", handleResize);
-
-        // Initial update of the scroll percentage
-        handleScroll();
-        handleResize();
-
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-            window.removeEventListener("resize", handleResize);
-        };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [scrollPercentage, tabDisplay]);
-
-    useEffect(() => {
-        if (tabDisplay === "Following") {
-            setPosts([]);
-            setPage(0);
-            runFollowing();
-            setFetching(true);
-        }
-        if (tabDisplay === "For you") {
-            setPosts([]);
-            setPage(0);
-            getPosts();
-            setFetching(true);
-        }
-    }, [tabDisplay]);
 
     const runFollowing = async () => {
         let idsForFollowing = FollowingList?.map(
             (item: any) => item.following_id
         );
-        console.log(page);
         const { from, to } = getFromAndTo();
         const { data } = await supabase
             .from("posts")
@@ -177,12 +93,69 @@ const FetchMore = ({ FollowingList }: { FollowingList?: any }) => {
         }
         setPage(page + 1);
         const formattedPosts = data.map(createPostObject);
-        setPosts((currentPosts: any) => [...currentPosts, ...formattedPosts]);
+        setPostsArray(formattedPosts);
         setFetching(false);
     };
+
+    const handleScroll = debounce(() => {
+        const { scrollY } = window;
+        const { scrollHeight, clientHeight } = document.documentElement;
+        const newScrollPercentage =
+            (scrollY / (scrollHeight - clientHeight)) * 100;
+
+        scrollPercentage.current = newScrollPercentage;
+
+        if (newScrollPercentage > 98 && !fetching && !turnOff) {
+            setFetching(true);
+            if (tabDisplay === "For you") {
+                document.getElementById("fetch")?.click();
+            } else if (tabDisplay === "Following") {
+                runFollowing();
+            }
+        }
+    }, 1000);
+
+    // ? I don't think I need this
+    // const handleResize = () => {
+    //     handleScroll();
+    // };
+
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll);
+        // window.addEventListener("resize", handleResize);
+
+        handleScroll();
+        // handleResize();
+
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+            // window.removeEventListener("resize", handleResize);
+        };
+    }, [scrollPercentage, tabDisplay]);
+
+    useEffect(() => {
+        if (tabDisplay === "Following") {
+            setPostsArray([]);
+            setPage(0);
+            runFollowing();
+            setFetching(true);
+        }
+        if (tabDisplay === "For you") {
+            setPostsArray([]);
+            setPage(0);
+            getPosts();
+            setFetching(true);
+        }
+    }, [tabDisplay]);
+
+    const imageUrlHost =
+        "https://umxjgngsvuacvscuazli.supabase.co/storage/v1/object/public/postImages/";
+
+    let currentPost: number = 0;
+
     return (
         <div className="max-h-auto bg-slate-950 w-[598.67px]">
-            {posts.map((post: any, index: number) => {
+            {postsArray.map((post: any, index: number) => {
                 currentPost++;
                 return (
                     <div

@@ -1,8 +1,10 @@
 "use client";
 import { useAppContext } from "@/app/Context/store";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Suspense } from "react";
 import { BsPeople } from "react-icons/bs";
+import { FaFeatherAlt } from "react-icons/fa";
 import { FaRegBookmark, FaXTwitter } from "react-icons/fa6";
 import { GoHomeFill } from "react-icons/go";
 import { HiOutlineMail } from "react-icons/hi";
@@ -12,8 +14,6 @@ import { PiDotsThreeCircle } from "react-icons/pi";
 import { TbBell } from "react-icons/tb";
 import Profile from "./Profile";
 import { Button } from "./button";
-import { FaFeatherAlt } from "react-icons/fa";
-import { usePathname, useRouter } from "next/navigation";
 
 const Navbar = () => {
     const { state, setState } = useAppContext();
@@ -28,10 +28,10 @@ const Navbar = () => {
     return (
         <>
             {requestUrl !== "/auth" && requestUrl !== "/somepage" && (
-                <div className="md:w-[13.5%] lg:w-[13.5%] xl:w-[26%] 2xl:w-[30.7%] h-screen">
-                    <div className="fixed md:w-[13.5%] lg:w-[13.5%] xl:w-[26%] 2xl:w-[30.7%] h-screen">
+                <div className="md:w-[13.5%] lg:w-[13.5%] xl:w-[26%] 2xl:w-[36%] h-screen text-white">
+                    <div className="fixed md:w-[13.5%] lg:w-[13.5%] xl:w-[26%] 2xl:w-[36%] h-screen">
                         <div className="flex flex-col items-end gap-1.5">
-                            <div className="w-[72px] xl:w-[259px] h-screen flex flex-col gap-2 relative">
+                            <div className="w-[72px] xl:w-[259px] h-screen flex flex-col gap-6 relative">
                                 <div className=" flex items-center">
                                     <Button
                                         className="rounded-full py-[25px] px-[10px]"
