@@ -1,8 +1,8 @@
 export interface Post {
     id: any;
-    name: any;
+    name?: any;
     post_by: any;
-    image: any;
+    image?: any;
     description: any;
     image_user: any;
     width?: any;

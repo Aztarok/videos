@@ -1,13 +1,12 @@
 "use client";
 import increaseData from "@/app/actions/increaseData";
+import { usePostsStore } from "@/app/Context/postStore";
+import { useAppContext } from "@/app/Context/store";
 import { supabaseBrowser } from "@/lib/supabase/browser";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import PostClient from "./PostClient";
-import { usePostsStore } from "@/app/Context/postStore";
-import { useAppContext } from "@/app/Context/store";
 
 let debounce = require("lodash.debounce");
 
@@ -15,7 +14,6 @@ export function createPostObject(post: any) {
     let images: any[] = [];
     for (let j = 0; j < post?.images?.length; j++) {
         const imageObject = post.images[j];
-        const { name } = imageObject;
         images.push(`${post.post_by}/${post.id}/${imageObject.name}`);
     }
     return {
@@ -32,9 +30,10 @@ export function createPostObject(post: any) {
 }
 
 const FetchMore = ({ FollowingList }: { FollowingList?: any }) => {
-    const postsArray = usePostsStore((state) => state.posts);
-    const setPostsArray = usePostsStore((state) => state.setPosts);
-    const router = useRouter();
+    const { postsArray, setPostsArray } = usePostsStore((state) => ({
+        postsArray: state.posts,
+        setPostsArray: state.setPosts
+    }));
     const supabase = supabaseBrowser();
     const [page, setPage] = useState<number>(0);
     const scrollPercentage = useRef<number>(0);
@@ -148,8 +147,7 @@ const FetchMore = ({ FollowingList }: { FollowingList?: any }) => {
         }
     }, [tabDisplay]);
 
-    const imageUrlHost =
-        "https://umxjgngsvuacvscuazli.supabase.co/storage/v1/object/public/postImages/";
+    const imageUrlHost = "";
 
     let currentPost: number = 0;
 
