@@ -136,12 +136,14 @@ const FetchMore = ({ FollowingList }: { FollowingList?: any }) => {
         if (tabDisplay === "Following") {
             setPostsArray([]);
             setPage(0);
+            setTurnOff(false);
             runFollowing();
             setFetching(true);
         }
         if (tabDisplay === "For you") {
             setPostsArray([]);
             setPage(0);
+            setTurnOff(false);
             getPosts();
             setFetching(true);
         }

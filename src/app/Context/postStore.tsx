@@ -3,21 +3,21 @@ import { produce } from "immer";
 import { Post } from "@/lib/types/custom";
 
 type postStore = {
-    posts: Post[];
-    setPosts: (newPosts: Post[]) => void;
-    followingPosts: Post[];
-    setFollowingPosts: (newFollowingPosts: Post[]) => void;
+    posts: any[];
+    setPosts: (newPosts: any[]) => void;
+    followingPosts: any[];
+    setFollowingPosts: (newFollowingPosts: any[]) => void;
 };
 
 export const usePostsStore = create<postStore>((set) => ({
     posts: [],
-    setPosts: (newPosts: Post[]) => {
-        set((state) => ({ posts: [...state.posts, ...newPosts] }));
+    setPosts: (newPosts: any[]) => {
+        set((state) => ({ posts: [...newPosts] }));
     },
     followingPosts: [],
-    setFollowingPosts: (newFollowingPosts: Post[]) => {
+    setFollowingPosts: (newFollowingPosts: any[]) => {
         set((state) => ({
-            followingPosts: [...state.followingPosts, ...newFollowingPosts]
+            followingPosts: [...newFollowingPosts]
         }));
     }
     // immer example
