@@ -8,7 +8,7 @@ const Page = async () => {
     let following: any = headersList.get("followingBruh");
     following = Array.from(new Set(JSON.parse(following!)));
     return (
-        <div className="">
+        <div className="ml-0 mr-auto">
             <div className="w-full">
                 <TabSwitch />
             </div>

@@ -23,14 +23,8 @@ interface PostProps {
         image_user: string;
         role: string;
     };
-    imageUrlHost: string;
-    currentPost: number;
 }
-const PostClient: React.FC<PostProps> = ({
-    post,
-    imageUrlHost,
-    currentPost
-}) => {
+const PostClient: React.FC<PostProps> = ({ post }) => {
     const imagePaths = ["png", "jpg", "jpeg"];
     const images = post.images;
     const supabase = supabaseBrowser();
@@ -118,7 +112,7 @@ const PostClient: React.FC<PostProps> = ({
                                     }/photo/${index + 1}`}
                                 >
                                     <ImageComponent
-                                        imageUrl={`${imageUrlHost}${image} `}
+                                        imageUrl={`${image} `}
                                         alt={""}
                                         aspectRatio={
                                             isLargeImage ? 1 / 2 : 1 / 1
@@ -128,7 +122,7 @@ const PostClient: React.FC<PostProps> = ({
                                 </Link>
                             ) : (
                                 <VideoComponent
-                                    videoUrl={`${imageUrlHost}${image} `}
+                                    videoUrl={`${image} `}
                                     aspectRatio={isLargeImage ? 1 / 2 : 1 / 1}
                                 />
                             )}

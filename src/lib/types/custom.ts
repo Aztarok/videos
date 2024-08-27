@@ -1,5 +1,5 @@
 export interface Post {
-    id: any;
+    id?: any;
     name?: any;
     post_by: any;
     image?: any;

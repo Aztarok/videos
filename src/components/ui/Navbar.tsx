@@ -4,8 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Suspense } from "react";
 import { BsPeople } from "react-icons/bs";
-import { FaFeatherAlt } from "react-icons/fa";
-import { FaRegBookmark, FaXTwitter } from "react-icons/fa6";
+import { FaFeatherAlt, FaRegBookmark } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import { GoHomeFill } from "react-icons/go";
 import { HiOutlineMail } from "react-icons/hi";
 import { IoIosSearch } from "react-icons/io";
@@ -15,8 +15,49 @@ import { TbBell } from "react-icons/tb";
 import Profile from "./Profile";
 import { Button } from "./button";
 
+const buttonData = [
+    {
+        href: "/",
+        icon: <GoHomeFill className="text-[30px] font-bold" />,
+        label: "Home"
+    },
+    {
+        icon: <IoIosSearch className="text-[30px] font-bold" />,
+        label: "Explore"
+    },
+    {
+        icon: <TbBell className="text-[30px] font-bold" />,
+        label: "Notifications"
+    },
+    {
+        icon: <HiOutlineMail className="text-[30px] font-bold" />,
+        label: "Messages"
+    },
+    {
+        icon: <FaRegBookmark className="text-[30px] font-bold" />,
+        label: "Bookmarks"
+    },
+    {
+        icon: <BsPeople className="text-[30px] font-bold" />,
+        label: "Communities"
+    },
+    {
+        icon: <FaXTwitter className="text-[30px] font-bold" />,
+        label: "Premium"
+    },
+    {
+        href: (state: any) => `/profile/${state?.handle}`,
+        icon: <IoPerson className="text-[30px] font-bold" />,
+        label: "Profile"
+    },
+    {
+        icon: <PiDotsThreeCircle className="text-[30px] font-bold" />,
+        label: "More"
+    }
+];
+
 const Navbar = () => {
-    const { state, setState } = useAppContext();
+    const { state } = useAppContext();
     const handleClick = () => {
         if (state) {
             document.getElementById("upload-post")?.click();
@@ -32,7 +73,7 @@ const Navbar = () => {
                     <div className="fixed md:w-[13.5%] lg:w-[13.5%] xl:w-[26%] 2xl:w-[36%] h-screen">
                         <div className="flex flex-col items-end gap-1.5">
                             <div className="w-[72px] xl:w-[259px] h-screen flex flex-col gap-6 relative">
-                                <div className=" flex items-center">
+                                <div className="flex items-center">
                                     <Button
                                         className="rounded-full py-[25px] px-[10px]"
                                         variant="ghost"
@@ -40,110 +81,43 @@ const Navbar = () => {
                                         <FaXTwitter className="w-[30px] h-[30px]" />
                                     </Button>
                                 </div>
-                                <div className="flex items-center ">
-                                    <Link href="/">
-                                        <Button
-                                            className="gap-3 pl-2 pr-2 xl:pr-7 xl:py-6 rounded-full"
-                                            variant="ghost"
-                                        >
-                                            <GoHomeFill className="text-[30px] font-bold" />
-                                            <h1 className="text-xl font-normal hidden xl:block">
-                                                Home
-                                            </h1>
-                                        </Button>
-                                    </Link>
-                                </div>
-                                <div className=" flex items-center ">
-                                    <Button
-                                        className="gap-3 pl-2 pr-2 xl:pr-7 xl:py-6 rounded-full"
-                                        variant="ghost"
-                                    >
-                                        <IoIosSearch className="text-[30px] font-bold " />
-                                        <h1 className="text-xl font-normal hidden xl:block">
-                                            Explore
-                                        </h1>
-                                    </Button>
-                                </div>
-                                <div className=" flex items-center ">
-                                    <Button
-                                        className="gap-3 pl-2 pr-2 xl:pr-7 xl:py-6 rounded-full"
-                                        variant="ghost"
-                                    >
-                                        <TbBell className="text-[30px] font-bold " />
-                                        <h1 className="text-xl font-normal hidden xl:block">
-                                            Notifications
-                                        </h1>
-                                    </Button>
-                                </div>
-                                <div className=" flex items-center ">
-                                    <Button
-                                        className="gap-3 pl-2 pr-2 xl:pr-7 xl:py-6 rounded-full"
-                                        variant="ghost"
-                                    >
-                                        <HiOutlineMail className="text-[30px] font-bold " />
-                                        <h1 className="text-xl font-normal hidden xl:block">
-                                            Messages
-                                        </h1>
-                                    </Button>
-                                </div>
-                                <div className=" flex items-center ">
-                                    <Button
-                                        className="gap-3 pl-2 pr-2 xl:pr-7 xl:py-6 rounded-full"
-                                        variant="ghost"
-                                    >
-                                        <FaRegBookmark className="text-[30px] font-bold " />
-                                        <h1 className="text-xl font-normal hidden xl:block">
-                                            Bookmarks
-                                        </h1>
-                                    </Button>
-                                </div>
-                                <div className=" flex items-center ">
-                                    <Button
-                                        className="gap-3 pl-2 pr-2 xl:pr-7 xl:py-6 rounded-full"
-                                        variant="ghost"
-                                    >
-                                        <BsPeople className="text-[30px] font-bold " />
-                                        <h1 className="text-xl font-normal hidden xl:block">
-                                            Communities
-                                        </h1>
-                                    </Button>
-                                </div>
-                                <div className=" flex items-center ">
-                                    <Button
-                                        className="gap-3 pl-2 pr-2 xl:pr-7 xl:py-6 rounded-full"
-                                        variant="ghost"
-                                    >
-                                        <FaXTwitter className="text-[30px] font-bold " />
-                                        <h1 className="text-xl font-normal hidden xl:block">
-                                            Premium
-                                        </h1>
-                                    </Button>
-                                </div>
-                                <div className=" flex items-center ">
-                                    <Link href={`/profile/${state?.handle}`}>
-                                        <Button
-                                            className="gap-3 pl-2 pr-2 xl:pr-7 xl:py-6 rounded-full"
-                                            variant="ghost"
-                                        >
-                                            <IoPerson className="text-[30px] font-bold " />
-                                            <h1 className="text-xl font-normal hidden xl:block">
-                                                Profile
-                                            </h1>
-                                        </Button>
-                                    </Link>
-                                </div>
-                                <div className=" flex items-center ">
-                                    <Button
-                                        className="gap-3 pl-2 pr-2 xl:pr-7 xl:py-6 rounded-full"
-                                        variant="ghost"
-                                    >
-                                        <PiDotsThreeCircle className="text-[30px] font-bold " />
-                                        <h1 className="text-xl font-normal hidden xl:block">
-                                            More
-                                        </h1>
-                                    </Button>
-                                </div>
-                                <div className=" mt-2 flex items-center ">
+                                {buttonData.map(
+                                    ({ href, icon, label }, index) => {
+                                        const ButtonContent = (
+                                            <Button
+                                                key={index}
+                                                className="gap-3 pl-2 pr-2 xl:pr-7 xl:py-6 rounded-full"
+                                                variant="ghost"
+                                            >
+                                                {icon}
+                                                <h1 className="text-xl font-normal hidden xl:block">
+                                                    {label}
+                                                </h1>
+                                            </Button>
+                                        );
+
+                                        return href ? (
+                                            <Link
+                                                key={index}
+                                                href={
+                                                    typeof href === "function"
+                                                        ? href(state)
+                                                        : href
+                                                }
+                                            >
+                                                {ButtonContent}
+                                            </Link>
+                                        ) : (
+                                            <div
+                                                key={index}
+                                                className="flex items-center"
+                                            >
+                                                {ButtonContent}
+                                            </div>
+                                        );
+                                    }
+                                )}
+                                <div className="mt-2 flex items-center">
                                     <Button
                                         className="text-white font-bold text-[16px] py-6 w-[50px] xl:w-[90%] rounded-full"
                                         variant="default"

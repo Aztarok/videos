@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAppContext } from "@/app/Context/store";
+import { cn } from "@/lib/utils";
 
 const TabSwitch = () => {
     const { tabDisplay, setTabDisplay } = useAppContext();
@@ -23,7 +24,13 @@ const TabSwitch = () => {
                         onClick={handleClickForYou}
                         className="w-full h-[80%] flex flex-col"
                     >
-                        <h1>For You</h1>
+                        <h1
+                            className={cn(
+                                tabDisplay === "For you" && "text-white"
+                            )}
+                        >
+                            For You
+                        </h1>
                         {tabDisplay === "For you" && (
                             <div className="absolute w-1/12 h-[5px] bg-blue-600 rounded-full bottom-0"></div>
                         )}
@@ -33,7 +40,11 @@ const TabSwitch = () => {
                         onClick={handleClickNew}
                         className="w-full h-[80%] flex flex-col"
                     >
-                        <h1>New Posts</h1>
+                        <h1
+                            className={cn(tabDisplay === "New" && "text-white")}
+                        >
+                            New Posts
+                        </h1>
                         {tabDisplay === "New" && (
                             <div className="absolute w-1/6 h-[5px] bg-blue-600 rounded-full bottom-0"></div>
                         )}
@@ -43,7 +54,13 @@ const TabSwitch = () => {
                         onClick={handleClickFollowing}
                         className="w-full h-[80%] flex flex-col"
                     >
-                        <h1>Following</h1>
+                        <h1
+                            className={cn(
+                                tabDisplay === "Following" && "text-white"
+                            )}
+                        >
+                            Following
+                        </h1>
                         {tabDisplay === "Following" && (
                             <div className="absolute w-1/6 h-[5px] bg-blue-600 rounded-full bottom-0"></div>
                         )}

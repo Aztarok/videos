@@ -56,8 +56,8 @@ const UserProfileButton = ({ data, fade }: { data: any; fade: boolean }) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 <DropdownMenuLabel>{`@${data.display_name}`}</DropdownMenuLabel>
-                <DropdownMenuItem className="text-slate-300">
-                    <h1>0 Followers</h1>
+                <DropdownMenuItem className="cursor-pointer hover:bg-blue-300">
+                    <h1 className="text-black">0 Followers</h1>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-white" />
                 <DropdownMenuItem asChild>
@@ -68,7 +68,7 @@ const UserProfileButton = ({ data, fade }: { data: any; fade: boolean }) => {
                                 ? data.handle
                                 : `profile/${data.handle}`
                         }`}
-                        className="cursor-pointer"
+                        className="cursor-pointer hover:bg-blue-300"
                     >
                         Profile
                     </Link>

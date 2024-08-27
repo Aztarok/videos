@@ -4,8 +4,9 @@ import increaseData from "@/app/actions/increaseData";
 import { usePostsStore } from "@/app/Context/postStore";
 import { useAppContext } from "@/app/Context/store";
 import { supabaseBrowser } from "@/lib/supabase/browser";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import PostList from "./PostList";
 
 export function createPostObject(post: any) {
     let images: any[] = [];
@@ -38,9 +39,7 @@ const HomePage = ({ FollowingList }: { FollowingList?: any }) => {
     const getFromAndTo = () => {
         const ITEMS_PER_PAGE = 5;
         let from = page * ITEMS_PER_PAGE;
-        let to = from + ITEMS_PER_PAGE;
-        to -= 1;
-        console.log(from, to);
+        let to = from + ITEMS_PER_PAGE - 1;
         return { from, to };
     };
 
@@ -50,7 +49,7 @@ const HomePage = ({ FollowingList }: { FollowingList?: any }) => {
             toast.error("Can't load more posts, you have reached the end");
             return;
         }
-
+        console.log("getting posts");
         const { from, to } = getFromAndTo();
         const data = await increaseData(from, to);
         if (!data) {
@@ -72,7 +71,7 @@ const HomePage = ({ FollowingList }: { FollowingList?: any }) => {
         let idsForFollowing = FollowingList?.map(
             (item: any) => item.following_id
         );
-        setPage(0);
+        console.log("running following");
         const { from, to } = getFromAndTo();
         const { data } = await supabase
             .from("posts")
@@ -86,50 +85,67 @@ const HomePage = ({ FollowingList }: { FollowingList?: any }) => {
             toast.error("Failed to get posts");
             return;
         }
-        console.log(page);
-        console.log(data);
-        console.log(FollowingList);
         setPage(page + 1);
         const formattedPosts = data.map(createPostObject);
-        console.log(formattedPosts);
         setFollowingPosts(formattedPosts);
-        console.log(followingPosts);
         setFetching(false);
     };
 
     useEffect(() => {
         if (tabDisplay === "Following") {
-            setTurnOff(false);
-            setFetching(true);
-            runFollowing();
-
-            console.log(followingPosts);
-            console.log(followingPosts.length);
+            if (followingPosts.length === 0) {
+                setPage(0);
+                setTurnOff(false);
+                setFetching(true);
+            }
         }
         if (tabDisplay === "For you") {
             if (posts.length === 0) {
                 setPage(0);
                 setTurnOff(false);
                 setFetching(true);
-                getPosts();
             }
         }
     }, [tabDisplay]);
 
+    useEffect(() => {
+        if (fetching) {
+            if (tabDisplay === "Following") {
+                runFollowing();
+            } else if (tabDisplay === "For you") {
+                getPosts();
+            }
+        }
+    }, [page, fetching]);
     return (
         <div className="text-white max-h-auto bg-slate-950 w-[600px]">
-            {tabDisplay === "For you" ? (
+            {/* {tabDisplay === "For you" ? (
                 <div>
                     {posts.map((post) => (
-                        <div key={post.id}>{post.id}</div>
+                        <div
+                            key={post.id}
+                            className="border-b border-x border-slate-400"
+                        >
+                            <PostClient post={post} />
+                        </div>
                     ))}
                 </div>
             ) : (
                 <div>
                     {followingPosts.map((post) => (
-                        <div key={post.id}>{post.id}</div>
+                        <div
+                            key={post.id}
+                            className="border-b border-x border-slate-400"
+                        >
+                            <PostClient post={post} />
+                        </div>
                     ))}
                 </div>
+            )} */}
+            {tabDisplay === "For you" ? (
+                <PostList posts={posts} />
+            ) : (
+                <PostList posts={followingPosts} /> // Update if you have a separate state for following posts
             )}
         </div>
     );

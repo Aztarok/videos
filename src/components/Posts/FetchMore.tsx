@@ -149,24 +149,15 @@ const FetchMore = ({ FollowingList }: { FollowingList?: any }) => {
         }
     }, [tabDisplay]);
 
-    const imageUrlHost = "";
-
-    let currentPost: number = 0;
-
     return (
         <div className="max-h-auto bg-slate-950 w-[598.67px]">
             {postsArray.map((post: any, index: number) => {
-                currentPost++;
                 return (
                     <div
                         key={index}
                         className="border-b-[1px] border-x-[1px] border-slate-400"
                     >
-                        <PostClient
-                            post={post}
-                            imageUrlHost={imageUrlHost}
-                            currentPost={currentPost}
-                        />
+                        <PostClient post={post} />
                     </div>
                 );
             })}
