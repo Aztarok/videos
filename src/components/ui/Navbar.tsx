@@ -57,7 +57,7 @@ const buttonData = [
 ];
 
 const Navbar = () => {
-    const { state } = useAppContext();
+    const { state } = useAppContext(); // Current user
     const handleClick = () => {
         if (state) {
             document.getElementById("upload-post")?.click();
@@ -126,7 +126,8 @@ const Navbar = () => {
                             </div>
                             <div className="absolute flex items-center bottom-4 w-full">
                                 <Suspense>
-                                    <Profile />
+                                    <Profile profile={state} />{" "}
+                                    {/* Ensure correct props */}
                                 </Suspense>
                             </div>
                         </div>

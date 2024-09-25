@@ -5,8 +5,8 @@ import FollowOrEdit from "./components/FollowOrEdit";
 import RouterBack from "./components/RouterBack";
 import FetchMore from "@/components/Posts/FetchMore";
 import Profile from "@/components/ui/Profile";
-import { usePostsStore } from "@/app/Context/postStore"; // Add import
-import ProfilePostsClient from "./components/ProfilePostsClient"; // Add import
+import { usePostsStore } from "@/app/Context/postStore";
+import ProfilePostsClient from "./components/ProfilePostsClient";
 
 const Page = async () => {
     let profilePath;
@@ -61,7 +61,19 @@ const Page = async () => {
             <div className="w-full h-auto border-x-[1px] border-slate-400">
                 <div className="w-full h-[310px] flex flex-col relative">
                     <div className="absolute pl-3 pt-3">
-                        <Profile />
+                        {userData &&
+                            userData.display_name &&
+                            userData.handle &&
+                            userData.image_url && (
+                                <Profile
+                                    profile={{
+                                        display_name:
+                                            userData.display_name || "Image",
+                                        handle: userData.handle || "Image",
+                                        image_url: userData.image_url || "Image"
+                                    }}
+                                />
+                            )}
                     </div>
                     <Suspense>
                         <FollowOrEdit
@@ -72,7 +84,12 @@ const Page = async () => {
                         />
                     </Suspense>
                     {/* Pass the fetched posts to the client component */}
-                    <ProfilePostsClient posts={userData?.posts || []} />
+                    {userData && userData.id && (
+                        <ProfilePostsClient
+                            posts={userData?.posts || []}
+                            profileId={userData.id}
+                        />
+                    )}
                 </div>
                 <div className="w-full h-[53px] border-b-[1px] border-slate-400"></div>
             </div>

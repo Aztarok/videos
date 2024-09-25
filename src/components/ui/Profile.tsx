@@ -1,117 +1,47 @@
 "use client";
-import useUser from "@/app/hook/useUser";
-import { protectedPaths } from "@/lib/constant";
-import { supabaseBrowser } from "@/lib/supabase/browser";
-import { useQueryClient } from "@tanstack/react-query";
+import React from "react";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
 
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
-import { Skeleton } from "./skeleton";
-
-export default function Profile({
-    fade = true,
-    imageNew
-}: {
-    fade?: boolean;
-    imageNew?: string;
-}) {
-    const { isFetching, data } = useUser();
-    const queryClient = useQueryClient();
-    const router = useRouter();
-
-    const pathname = usePathname();
-
-    if (isFetching) {
-        return (
-            <>
-                <div className="flex items-center space-x-4">
-                    <Skeleton className="h-12 w-12 rounded-full bg-white" />
-                    <div className="space-y-2">
-                        <Skeleton className="h-4 hidden xl:block w-[180px] bg-white" />
-                        <Skeleton className="h-4 hidden xl:block w-[180px] bg-white" />
-                    </div>
-                </div>
-            </>
-        );
-    }
-
-    const handleLogout = async () => {
-        const supabase = supabaseBrowser();
-        queryClient.clear();
-        await supabase.auth.signOut();
-        router.refresh();
-        if (
-            protectedPaths.includes(pathname) ||
-            protectedPaths.includes(pathname.split("/")[1])
-        ) {
-            router.replace("/auth?next=" + pathname);
-            router.refresh();
-        }
+interface ProfileProps {
+    profile?: {
+        display_name?: string;
+        handle?: string;
+        image_url?: string;
     };
-    // const handlePath = async () => {
-    //     console.log(pathname);
-    //     console.log(pathname.split("/")[1]);
-    //     if (protectedPaths.includes(pathname.split("/")[1])) {
-    //         console.log("true");
-    //     } else {
-    //         console.log("false");
-    //     }
-    // };
+    fade?: boolean;
+}
 
-    let imageUrl;
-    if (imageNew) {
-        imageUrl = imageNew;
-    } else {
-        imageUrl = data?.image_url;
+const Profile: React.FC<ProfileProps> = ({ profile, fade = true }) => {
+    if (!profile) {
+        return null; // or return a placeholder component
     }
-    const profileCheck = pathname.substring(0, pathname.indexOf("/", 1));
-    return (
-        <div className="items-center flex overflow-x-hidden">
-            {!data?.id ? null : ( // </Link> //     <Button variant="outline">SignIn</Button> // <Link href="/auth" className=" animate-fade">
-                <DropdownMenu modal={false}>
-                    <DropdownMenuTrigger>
-                        <>
-                            {data?.image_url ? (
-                                <div className="w-[50px]">
-                                    <Image
-                                        src={imageUrl || ""}
-                                        alt={data.display_name || ""}
-                                        width={50}
-                                        height={50}
-                                        priority={true}
-                                        className={`${
-                                            fade ? "animate-fade" : ""
-                                        } rounded-full focus:border-none outline-none cursor-pointer`}
-                                    />
-                                </div>
-                            ) : (
-                                <div className="h-[50px] w-[50px] flex items-center justify-center rounded-full text-2xl font-bold cursor-pointer">
-                                    <h1>{data.email[0]}</h1>
-                                </div>
-                            )}
-                        </>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                        <DropdownMenuSeparator className="bg-white" />
 
-                        <DropdownMenuItem onClick={handleLogout}>
-                            Logout
-                        </DropdownMenuItem>
-                        {/* <DropdownMenuItem onClick={handlePath}>
-                            Pathname
-                        </DropdownMenuItem> */}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+    const { display_name = "", handle = "", image_url = "" } = profile;
+
+    return (
+        <div className="flex items-center space-x-2">
+            {image_url ? (
+                <Image
+                    src={image_url}
+                    alt={display_name || "Profile"}
+                    width={50}
+                    height={50}
+                    className={cn(`${fade ? "animate-fade" : ""} rounded-full`)}
+                />
+            ) : (
+                <div className="h-12 w-12 flex items-center justify-center rounded-full bg-gray-300 text-xl font-bold">
+                    {handle ? handle.charAt(0).toUpperCase() : "U"}
+                </div>
             )}
+            <div>
+                <h2 className="text-lg font-semibold">
+                    {display_name || "Unknown"}
+                </h2>
+                <p className="text-sm text-gray-500">@{handle || "unknown"}</p>
+            </div>
         </div>
     );
-}
+};
+
+export default Profile;

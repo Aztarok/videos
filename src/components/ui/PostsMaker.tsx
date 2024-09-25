@@ -23,6 +23,7 @@ import { Button } from "./button";
 import { Textarea } from "./textarea";
 import postHelper from "@/app/actions/postHelper";
 import { createPostObject } from "../Posts/FetchMore";
+import { usePostsStore } from "@/app/Context/postStore";
 
 export default function PostsMaker() {
     const inputRef = useRef() as React.MutableRefObject<HTMLTextAreaElement>;
@@ -33,6 +34,8 @@ export default function PostsMaker() {
     const [postContent, setPostContent] = useState<string>();
     const { state, session, setPosts } = useAppContext();
     const [uppy, setUppy] = useState<Uppy>();
+    const [isUploading, setIsUploading] = useState(false);
+    const addPost = usePostsStore((state) => state.addPost);
     const onBeforeRequest = async (req: any) => {
         req.setHeader(
             "Authorization",
@@ -112,38 +115,91 @@ export default function PostsMaker() {
         if (!uppy) {
             throw Error;
         }
-        const randomUUID = crypto.randomUUID();
-        if (uppy.getFiles().length !== 0) {
-            for (let i = 0; i < uppy.getFiles().length; i++) {
-                uppy.setFileMeta(uppy.getFiles()[i].id, {
-                    objectName:
-                        state?.id +
-                        "/" +
-                        randomUUID +
-                        "/" +
-                        uppy.getFiles()[i].name
+        setIsUploading(true);
+        try {
+            const randomUUID = crypto.randomUUID();
+            if (uppy.getFiles().length !== 0) {
+                for (let i = 0; i < uppy.getFiles().length; i++) {
+                    uppy.setFileMeta(uppy.getFiles()[i].id, {
+                        objectName:
+                            state?.id +
+                            "/" +
+                            randomUUID +
+                            "/" +
+                            uppy.getFiles()[i].name
+                    });
+                }
+
+                const { successful } = await uppy.upload();
+
+                if (!successful) {
+                    toast.error("You have to wait before making new posts");
+                    return;
+                }
+                await supabase
+                    .from("posts")
+                    .update({ description: postContent })
+                    .eq("id", randomUUID);
+
+                // Create a new post object
+                const newPost = createPostObject({
+                    id: randomUUID,
+                    created_at: new Date().toISOString(),
+                    images: uppy
+                        .getFiles()
+                        .map(
+                            (file) => `${state?.id}/${randomUUID}/${file.name}`
+                        ),
+                    description: postContent,
+                    post_by: state?.id,
+                    profiles: {
+                        display_name: state?.display_name,
+                        handle: state?.handle,
+                        image_url: state?.image_url,
+                        role: state?.role
+                    }
                 });
-            }
 
-            const { successful } = await uppy.upload();
+                // Add the new post to the store
+                addPost(newPost);
 
-            if (!successful) {
-                toast.error("You have to wait before making new posts");
+                await appendPost();
+                router.push("/"); // Refresh the page
+            } else if (uppy.getFiles().length === 0 && postContent) {
+                await supabase.from("posts").insert({
+                    id: randomUUID,
+                    description: postContent,
+                    post_by: state?.id!
+                });
+
+                // Create a new post object for text-only post
+                const newPost = createPostObject({
+                    id: randomUUID,
+                    created_at: new Date().toISOString(),
+                    images: [],
+                    description: postContent,
+                    post_by: state?.id,
+                    profiles: {
+                        display_name: state?.display_name,
+                        handle: state?.handle,
+                        image_url: state?.image_url,
+                        role: state?.role
+                    }
+                });
+
+                // Add the new post to the store
+                addPost(newPost);
+
+                await appendPost();
+                router.push("/"); // Refresh the page
+            } else {
+                toast.warning("Please add content to the post");
             }
-            await supabase
-                .from("posts")
-                .update({ description: postContent })
-                .eq("id", randomUUID);
-            appendPost();
-        } else if (uppy.getFiles().length === 0 && postContent) {
-            await supabase.from("posts").insert({
-                id: randomUUID,
-                description: postContent,
-                post_by: state?.id!
-            });
-            appendPost();
-        } else {
-            toast.warning("Please add content to the post");
+        } catch (error) {
+            console.error("Upload error:", error);
+            toast.error("An error occurred during upload");
+        } finally {
+            setIsUploading(false);
         }
     };
 
@@ -189,8 +245,9 @@ export default function PostsMaker() {
                     <Button
                         className="w-full text-white text-md"
                         onClick={handleUpload}
+                        disabled={isUploading}
                     >
-                        Upload
+                        {isUploading ? "Uploading..." : "Upload"}
                     </Button>
                 </div>
             </DialogContent>

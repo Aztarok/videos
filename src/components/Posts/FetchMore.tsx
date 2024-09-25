@@ -29,55 +29,84 @@ export function createPostObject(post: any) {
     };
 }
 
-const FetchMore = ({ FollowingList }: { FollowingList?: any }) => {
-    const { postsArray, setPostsArray } = usePostsStore((state) => ({
-        postsArray: state.posts,
-        setPostsArray: state.setPosts
+const FetchMore = () => {
+    const {
+        posts,
+        setPosts,
+        followingPosts,
+        setFollowingPosts,
+        profilePosts,
+        setProfilePosts,
+        currentProfileId
+    } = usePostsStore((state) => ({
+        posts: state.posts,
+        setPosts: state.setPosts,
+        followingPosts: state.followingPosts,
+        setFollowingPosts: state.setFollowingPosts,
+        profilePosts: state.profilePosts,
+        setProfilePosts: state.setProfilePosts,
+        currentProfileId: state.currentProfileId
     }));
+
     const supabase = supabaseBrowser();
-    const [page, setPage] = useState<number>(0);
-    const scrollPercentage = useRef<number>(0);
+    const [pageForYou, setPageForYou] = useState<number>(0);
+    const [pageFollowing, setPageFollowing] = useState<number>(0);
+    const [pageProfile, setPageProfile] = useState<number>(0);
     const [fetching, setFetching] = useState(false);
-    const [turnOff, setTurnOff] = useState<boolean>(false);
+    const [turnOffForYou, setTurnOffForYou] = useState<boolean>(false);
+    const [turnOffFollowing, setTurnOffFollowing] = useState<boolean>(false);
+    const [turnOffProfile, setTurnOffProfile] = useState<boolean>(false);
     const { tabDisplay } = useAppContext();
 
-    const getFromAndTo = () => {
-        const ITEMS_PER_PAGE = 5;
+    const ITEMS_PER_PAGE = 5;
+
+    const getFromAndTo = (page: number) => {
         let from = page * ITEMS_PER_PAGE;
-        let to = from + ITEMS_PER_PAGE;
-        to -= 1;
+        let to = from + ITEMS_PER_PAGE - 1;
         return { from, to };
     };
 
     const getPosts = async () => {
-        if (turnOff) {
+        if (turnOffForYou) {
             toast.error("Can't load more posts, you have reached the end");
             return;
         }
 
-        const { from, to } = getFromAndTo();
-        const data = await increaseData(from, to);
-        if (!data) {
-            toast.error("Failed to get posts");
+        const { from, to } = getFromAndTo(pageForYou);
+        const { data } = await supabase
+            .from("posts")
+            .select(
+                "*,images(name),profiles(display_name, handle, image_url, role)"
+            )
+            .range(from, to)
+            .order("created_at", { ascending: false });
+
+        if (!data || data.length === 0) {
+            setTurnOffForYou(true);
+            if (!data) toast.error("Failed to get posts");
+            else toast.error("No more posts");
             return;
         }
-        if (data.length === 0) {
-            toast.error("Failed to get more posts");
-            setTurnOff(true);
-            return;
-        }
-        setPage(page + 1);
 
         const formattedPosts = data.map(createPostObject);
-        setPostsArray(formattedPosts);
+        setPosts([...posts, ...formattedPosts]);
+        setPageForYou(pageForYou + 1);
         setFetching(false);
     };
 
     const runFollowing = async () => {
-        let idsForFollowing = FollowingList?.map(
-            (item: any) => item.following_id
-        );
-        const { from, to } = getFromAndTo();
+        if (turnOffFollowing) {
+            toast.error("Can't load more posts, you've reached the end");
+            return;
+        }
+
+        const { from, to } = getFromAndTo(pageFollowing);
+        let idsForFollowing: string[] = []; // Assuming you have this list available
+
+        // Ensure you have the FollowingList available from context or props
+        // Replace `FollowingList` with the actual source of following IDs
+        // Example: const FollowingList = useFollowing().data;
+
         const { data } = await supabase
             .from("posts")
             .select(
@@ -86,13 +115,46 @@ const FetchMore = ({ FollowingList }: { FollowingList?: any }) => {
             .in("post_by", idsForFollowing)
             .range(from, to)
             .order("created_at", { ascending: false });
-        if (!data) {
-            toast.error("Failed to get posts");
+
+        if (!data || data.length === 0) {
+            setTurnOffFollowing(true);
+            if (!data) toast.error("Failed to get posts");
+            else toast.error("No more posts");
             return;
         }
-        setPage(page + 1);
+
         const formattedPosts = data.map(createPostObject);
-        setPostsArray(formattedPosts);
+        setFollowingPosts([...followingPosts, ...formattedPosts]);
+        setPageFollowing(pageFollowing + 1);
+        setFetching(false);
+    };
+
+    const runProfilePosts = async () => {
+        if (turnOffProfile || !currentProfileId) {
+            toast.error("Can't load more posts, you've reached the end");
+            return;
+        }
+
+        const { from, to } = getFromAndTo(pageProfile);
+        const { data } = await supabase
+            .from("posts")
+            .select(
+                "*,images(name),profiles(display_name, handle, image_url, role)"
+            )
+            .eq("post_by", currentProfileId)
+            .range(from, to)
+            .order("created_at", { ascending: false });
+
+        if (!data || data.length === 0) {
+            setTurnOffProfile(true);
+            if (!data) toast.error("Failed to get posts");
+            else toast.error("No more posts");
+            return;
+        }
+
+        const formattedPosts = data.map(createPostObject);
+        setProfilePosts([...profilePosts, ...formattedPosts]);
+        setPageProfile(pageProfile + 1);
         setFetching(false);
     };
 
@@ -102,69 +164,88 @@ const FetchMore = ({ FollowingList }: { FollowingList?: any }) => {
         const newScrollPercentage =
             (scrollY / (scrollHeight - clientHeight)) * 100;
 
-        scrollPercentage.current = newScrollPercentage;
-
-        if (newScrollPercentage > 98 && !fetching && !turnOff) {
+        if (newScrollPercentage > 98 && !fetching) {
             setFetching(true);
             if (tabDisplay === "For you") {
-                document.getElementById("fetch")?.click();
+                getPosts();
             } else if (tabDisplay === "Following") {
                 runFollowing();
+            } else if (tabDisplay === "Profile") {
+                runProfilePosts();
             }
         }
     }, 1000);
 
-    // ? I don't think I need this
-    // const handleResize = () => {
-    //     handleScroll();
-    // };
-
     useEffect(() => {
         window.addEventListener("scroll", handleScroll);
-        // window.addEventListener("resize", handleResize);
-
-        handleScroll();
-        // handleResize();
 
         return () => {
             window.removeEventListener("scroll", handleScroll);
-            // window.removeEventListener("resize", handleResize);
         };
-    }, [scrollPercentage, tabDisplay]);
+    }, [fetching, tabDisplay, pageForYou, pageFollowing, pageProfile]);
 
     useEffect(() => {
-        if (tabDisplay === "Following") {
-            setPostsArray([]);
-            setPage(0);
-            setTurnOff(false);
-            runFollowing();
-            setFetching(true);
-        }
+        setFetching(true);
         if (tabDisplay === "For you") {
-            setPostsArray([]);
-            setPage(0);
-            setTurnOff(false);
-            getPosts();
-            setFetching(true);
+            if (posts.length === 0) {
+                setTurnOffForYou(false);
+                setPageForYou(0);
+                getPosts();
+            }
+        } else if (tabDisplay === "Following") {
+            if (followingPosts.length === 0) {
+                setTurnOffFollowing(false);
+                setPageFollowing(0);
+                runFollowing();
+            }
+        } else if (tabDisplay === "Profile") {
+            if (profilePosts.length === 0) {
+                setTurnOffProfile(false);
+                setPageProfile(0);
+                runProfilePosts();
+            }
         }
     }, [tabDisplay]);
 
     return (
         <div className="max-h-auto bg-slate-950 w-[598.67px]">
-            {postsArray.map((post: any, index: number) => {
-                return (
+            {tabDisplay === "For you" &&
+                posts.map((post: any, index: number) => (
                     <div
                         key={index}
                         className="border-b-[1px] border-x-[1px] border-slate-400"
                     >
                         <PostClient post={post} />
                     </div>
-                );
-            })}
+                ))}
+            {tabDisplay === "Following" &&
+                followingPosts.map((post: any, index: number) => (
+                    <div
+                        key={index}
+                        className="border-b-[1px] border-x-[1px] border-slate-400"
+                    >
+                        <PostClient post={post} />
+                    </div>
+                ))}
+            {tabDisplay === "Profile" &&
+                profilePosts.map((post: any, index: number) => (
+                    <div
+                        key={index}
+                        className="border-b-[1px] border-x-[1px] border-slate-400"
+                    >
+                        <PostClient post={post} />
+                    </div>
+                ))}
             <div className="grid grid-cols-1 w-[60%] ml-auto mr-auto gap-10"></div>
             <Button
                 onClick={() => {
-                    getPosts();
+                    if (tabDisplay === "For you") {
+                        getPosts();
+                    } else if (tabDisplay === "Following") {
+                        runFollowing();
+                    } else if (tabDisplay === "Profile") {
+                        runProfilePosts();
+                    }
                 }}
                 className="w-full bg-amber-600 my-5 hidden"
                 id="fetch"

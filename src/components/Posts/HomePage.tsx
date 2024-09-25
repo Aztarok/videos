@@ -7,6 +7,7 @@ import { supabaseBrowser } from "@/lib/supabase/browser";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import PostList from "./PostList";
+import debounce from "lodash.debounce";
 
 export function createPostObject(post: any) {
     let images: any[] = [];
@@ -37,13 +38,14 @@ const HomePage = ({ FollowingList }: { FollowingList?: any }) => {
     const { tabDisplay } = useAppContext();
     const supabase = supabaseBrowser();
     const getFromAndTo = () => {
-        const ITEMS_PER_PAGE = 7;
-        let from = page * ITEMS_PER_PAGE;
+        const ITEMS_PER_PAGE = 10;
+        let from = page * ITEMS_PER_PAGE + newPostsCount;
         let to = from + ITEMS_PER_PAGE - 1;
         return { from, to };
     };
 
     const [turnOff, setTurnOff] = useState<boolean>(false);
+    const [newPostsCount, setNewPostsCount] = useState<number>(0);
     const getPosts = async () => {
         if (turnOff) {
             toast.error("Can't load more posts, you have reached the end");
@@ -64,7 +66,8 @@ const HomePage = ({ FollowingList }: { FollowingList?: any }) => {
         setPage(page + 1);
 
         const formattedPosts = data.map(createPostObject);
-        setPosts(formattedPosts);
+        setPosts([...posts, ...formattedPosts]);
+        setNewPostsCount(0);
         setFetching(false);
     };
     const runFollowing = async () => {
@@ -117,6 +120,33 @@ const HomePage = ({ FollowingList }: { FollowingList?: any }) => {
             }
         }
     }, [page, fetching]);
+
+    useEffect(() => {
+        const debouncedHandleScroll = debounce(() => {
+            const { scrollY } = window;
+            const { scrollHeight, clientHeight } = document.documentElement;
+            const newScrollPercentage =
+                (scrollY / (scrollHeight - clientHeight)) * 100;
+
+            if (newScrollPercentage > 98 && !fetching) {
+                setFetching(true);
+            }
+        }, 1000);
+
+        window.addEventListener("scroll", debouncedHandleScroll);
+
+        return () => {
+            window.removeEventListener("scroll", debouncedHandleScroll);
+            debouncedHandleScroll.cancel(); // Cancel any pending debounced calls
+        };
+    }, [fetching]);
+
+    useEffect(() => {
+        if (tabDisplay === "For you") {
+            setNewPostsCount(posts.length - page * 10);
+        }
+    }, [posts, tabDisplay, page]);
+
     return (
         <div className="text-white max-h-auto bg-slate-950 w-[600px]">
             {/* {tabDisplay === "For you" ? (
