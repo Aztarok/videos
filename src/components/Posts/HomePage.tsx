@@ -37,7 +37,7 @@ const HomePage = ({ FollowingList }: { FollowingList?: any }) => {
     const { tabDisplay } = useAppContext();
     const supabase = supabaseBrowser();
     const getFromAndTo = () => {
-        const ITEMS_PER_PAGE = 5;
+        const ITEMS_PER_PAGE = 7;
         let from = page * ITEMS_PER_PAGE;
         let to = from + ITEMS_PER_PAGE - 1;
         return { from, to };

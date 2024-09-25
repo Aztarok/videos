@@ -5,6 +5,9 @@ import FollowOrEdit from "./components/FollowOrEdit";
 import RouterBack from "./components/RouterBack";
 import FetchMore from "@/components/Posts/FetchMore";
 import Profile from "@/components/ui/Profile";
+import { usePostsStore } from "@/app/Context/postStore"; // Add import
+import ProfilePostsClient from "./components/ProfilePostsClient"; // Add import
+
 const Page = async () => {
     let profilePath;
     const headersList = headers();
@@ -68,6 +71,8 @@ const Page = async () => {
                             followingTotal={followme2}
                         />
                     </Suspense>
+                    {/* Pass the fetched posts to the client component */}
+                    <ProfilePostsClient posts={userData?.posts || []} />
                 </div>
                 <div className="w-full h-[53px] border-b-[1px] border-slate-400"></div>
             </div>

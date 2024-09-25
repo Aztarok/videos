@@ -57,7 +57,7 @@ const UserProfileButton = ({ data, fade }: { data: any; fade: boolean }) => {
             <DropdownMenuContent>
                 <DropdownMenuLabel>{`@${data.display_name}`}</DropdownMenuLabel>
                 <DropdownMenuItem className="cursor-pointer hover:bg-blue-300">
-                    <h1 className="text-black">0 Followers</h1>
+                    <h1 className="text-white">0 Followers</h1>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator className="bg-white" />
                 <DropdownMenuItem asChild>

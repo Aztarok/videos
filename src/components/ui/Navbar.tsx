@@ -69,71 +69,65 @@ const Navbar = () => {
     return (
         <>
             {requestUrl !== "/auth" && requestUrl !== "/somepage" && (
-                <div className="md:w-[13.5%] lg:w-[13.5%] xl:w-[26%] 2xl:w-[36%] h-screen text-white">
-                    <div className="fixed md:w-[13.5%] lg:w-[13.5%] xl:w-[26%] 2xl:w-[36%] h-screen">
-                        <div className="flex flex-col items-end gap-1.5">
-                            <div className="w-[72px] xl:w-[259px] h-screen flex flex-col gap-6 relative">
-                                <div className="flex items-center">
+                <div className="sticky top-0  md:w-[13.5%] lg:w-[13.5%] xl:w-[26%] 2xl:w-[36%] h-screen">
+                    <div className="relative flex flex-col items-end gap-1.5">
+                        <div className="w-[72px] xl:w-[259px] h-screen flex flex-col gap-6 relative">
+                            <div className="flex items-center">
+                                <Button
+                                    className="rounded-full py-[25px] px-[10px]"
+                                    variant="ghost"
+                                >
+                                    <FaXTwitter className="w-[30px] h-[30px]" />
+                                </Button>
+                            </div>
+                            {buttonData.map(({ href, icon, label }, index) => {
+                                const ButtonContent = (
                                     <Button
-                                        className="rounded-full py-[25px] px-[10px]"
+                                        key={index}
+                                        className="gap-3 pl-2 pr-2 xl:pr-7 xl:py-6 rounded-full"
                                         variant="ghost"
                                     >
-                                        <FaXTwitter className="w-[30px] h-[30px]" />
-                                    </Button>
-                                </div>
-                                {buttonData.map(
-                                    ({ href, icon, label }, index) => {
-                                        const ButtonContent = (
-                                            <Button
-                                                key={index}
-                                                className="gap-3 pl-2 pr-2 xl:pr-7 xl:py-6 rounded-full"
-                                                variant="ghost"
-                                            >
-                                                {icon}
-                                                <h1 className="text-xl font-normal hidden xl:block">
-                                                    {label}
-                                                </h1>
-                                            </Button>
-                                        );
-
-                                        return href ? (
-                                            <Link
-                                                key={index}
-                                                href={
-                                                    typeof href === "function"
-                                                        ? href(state)
-                                                        : href
-                                                }
-                                            >
-                                                {ButtonContent}
-                                            </Link>
-                                        ) : (
-                                            <div
-                                                key={index}
-                                                className="flex items-center"
-                                            >
-                                                {ButtonContent}
-                                            </div>
-                                        );
-                                    }
-                                )}
-                                <div className="mt-2 flex items-center">
-                                    <Button
-                                        className="text-white font-bold text-[16px] py-6 w-[50px] xl:w-[90%] rounded-full"
-                                        variant="default"
-                                        onClick={handleClick}
-                                    >
-                                        <h1 className="hidden xl:block">
-                                            Post
+                                        {icon}
+                                        <h1 className="text-xl font-normal hidden xl:block">
+                                            {label}
                                         </h1>
-                                        <FaFeatherAlt className="text-xl font-normal block xl:hidden" />
                                     </Button>
-                                </div>
-                                <div className="absolute flex items-center bottom-4 w-full">
-                                    <Suspense>
-                                        <Profile />
-                                    </Suspense>
-                                </div>
+                                );
+
+                                return href ? (
+                                    <Link
+                                        key={index}
+                                        href={
+                                            typeof href === "function"
+                                                ? href(state)
+                                                : href
+                                        }
+                                    >
+                                        {ButtonContent}
+                                    </Link>
+                                ) : (
+                                    <div
+                                        key={index}
+                                        className="flex items-center"
+                                    >
+                                        {ButtonContent}
+                                    </div>
+                                );
+                            })}
+                            <div className="mt-2 flex items-center">
+                                <Button
+                                    className="text-white font-bold text-[16px] py-6 w-[50px] xl:w-[90%] rounded-full"
+                                    variant="default"
+                                    onClick={handleClick}
+                                >
+                                    <h1 className="hidden xl:block">Post</h1>
+                                    <FaFeatherAlt className="text-xl font-normal block xl:hidden" />
+                                </Button>
+                            </div>
+                            <div className="absolute flex items-center bottom-4 w-full">
+                                <Suspense>
+                                    <Profile />
+                                </Suspense>
                             </div>
                         </div>
                     </div>
